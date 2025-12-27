@@ -29,10 +29,6 @@
     "react-native-svg": "14.1.0",
     "react-native-webview": "13.6.3",
     "react-native-maps": "1.8.0",
-    "three": "^0.160.0",
-    "expo-three": "^7.0.0",
-    "expo-gl": "~13.6.0",
-    "@react-three/fiber": "^8.15.12",
     "zustand": "^4.4.7",
     "date-fns": "^3.0.6",
     "@expo/metro-runtime": "~3.1.1"
@@ -40,7 +36,6 @@
   "devDependencies": {
     "@babel/core": "^7.23.6",
     "@types/react": "~18.2.45",
-    "@types/three": "^0.160.0",
     "typescript": "^5.3.3"
   },
   "private": true
