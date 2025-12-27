@@ -20,12 +20,14 @@ export default function BottomNav() {
       left: 0,
       right: 0,
       height: '70px',
-      background: '#1a365d',
-      borderTop: '1px solid #2d4a6f',
+      background: 'rgba(3, 7, 18, 0.95)',
+      backdropFilter: 'blur(20px)',
+      borderTop: '1px solid rgba(255, 255, 255, 0.06)',
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
       zIndex: 1000,
+      padding: '0 20px',
     }}>
       {navItems.map(({ href, icon: Icon, label }) => {
         const isActive = pathname === href;
@@ -38,12 +40,43 @@ export default function BottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               gap: '4px',
-              color: isActive ? '#4fd1c5' : '#a0aec0',
-              padding: '8px 16px',
+              padding: '8px 24px',
+              borderRadius: '16px',
+              background: isActive ? 'rgba(20, 184, 166, 0.1)' : 'transparent',
+              transition: 'all 0.3s ease',
             }}
           >
-            <Icon size={24} />
-            <span style={{ fontSize: '12px' }}>{label}</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+            }}>
+              <Icon
+                size={24}
+                color={isActive ? '#14b8a6' : '#64748b'}
+                strokeWidth={isActive ? 2.5 : 2}
+              />
+            </div>
+            <span style={{
+              fontSize: '11px',
+              fontWeight: isActive ? 600 : 500,
+              color: isActive ? '#14b8a6' : '#64748b',
+              letterSpacing: '0.02em',
+            }}>
+              {label}
+            </span>
+            {isActive && (
+              <div style={{
+                position: 'absolute',
+                bottom: '8px',
+                width: '4px',
+                height: '4px',
+                borderRadius: '2px',
+                background: '#14b8a6',
+              }} />
+            )}
           </Link>
         );
       })}
