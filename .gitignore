@@ -3,19 +3,14 @@ node_modules/
 
 # Expo
 .expo/
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
 dist/
-web-build/
-
-# Native builds
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
 
 # Debug
 npm-debug.*
@@ -32,6 +27,7 @@ yarn-error.*
 
 # TypeScript
 *.tsbuildinfo
+next-env.d.ts
 
 # Testing
 coverage/
@@ -41,3 +37,6 @@ coverage/
 .vscode/
 *.swp
 *.swo
+
+# Vercel
+.vercel
