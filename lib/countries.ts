@@ -22,6 +22,7 @@ export interface Country {
   coordinates: { lat: number; lng: number };
   visited: boolean;
   continent: 'Europe' | 'Asia' | 'Africa' | 'North America' | 'South America' | 'Oceania';
+  parentCountry?: string; // For multi-city countries (e.g., "USA" for both Nashville and Las Vegas)
   places: Place[];
   experiences: Experience[];
   topTips: string[];
@@ -787,6 +788,7 @@ export const countries: Country[] = [
     coordinates: { lat: 36.1699, lng: -115.1398 },
     visited: true,
     continent: 'North America',
+    parentCountry: 'USA',
     places: [
       {
         name: 'Las Vegas Strip',
@@ -858,6 +860,7 @@ export const countries: Country[] = [
     coordinates: { lat: 36.1627, lng: -86.7816 },
     visited: true,
     continent: 'North America',
+    parentCountry: 'USA',
     places: [
       {
         name: 'Broadway Street (Music Row)',
@@ -1008,6 +1011,7 @@ export const countries: Country[] = [
     coordinates: { lat: 41.9028, lng: 12.4964 },
     visited: true,
     continent: 'Europe',
+    parentCountry: 'Italy',
     places: [
       {
         name: 'Colosseum',
@@ -1085,6 +1089,7 @@ export const countries: Country[] = [
     coordinates: { lat: 45.4408, lng: 12.3155 },
     visited: true,
     continent: 'Europe',
+    parentCountry: 'Italy',
     places: [
       {
         name: 'Grand Canal & Gondola Ride',

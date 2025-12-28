@@ -19,33 +19,79 @@ const continentColors = {
 
 export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [selectedCityGroup, setSelectedCityGroup] = useState<Country[] | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'visited' | 'wishlist'>('all');
   const [selectedContinent, setSelectedContinent] = useState<typeof continents[number] | 'all'>('all');
 
   const visitedCount = countries.filter(c => c.visited).length;
   const wishlistCount = countries.filter(c => !c.visited).length;
 
+  // Group countries by parent (for multi-city countries)
+  const getDisplayCountries = () => {
+    const displayItems: Array<Country | { isGroup: true; parentCountry: string; cities: Country[] }> = [];
+    const groupedByParent = new Map<string, Country[]>();
+    const standalone: Country[] = [];
+
+    countries.forEach(country => {
+      if (country.parentCountry) {
+        if (!groupedByParent.has(country.parentCountry)) {
+          groupedByParent.set(country.parentCountry, []);
+        }
+        groupedByParent.get(country.parentCountry)!.push(country);
+      } else {
+        standalone.push(country);
+      }
+    });
+
+    // Add grouped countries
+    groupedByParent.forEach((cities, parentCountry) => {
+      const representative = cities[0]; // Use first city as representative
+      displayItems.push({
+        ...representative,
+        isMultiCity: true,
+        cities
+      } as any);
+    });
+
+    // Add standalone countries
+    standalone.forEach(country => {
+      displayItems.push(country);
+    });
+
+    return displayItems;
+  };
+
+  const allDisplayCountries = getDisplayCountries();
+
   // Group countries by continent
   const countriesByContinent = continents.reduce((acc, continent) => {
-    acc[continent] = countries.filter(c => c.continent === continent);
+    acc[continent] = allDisplayCountries.filter((c: any) => c.continent === continent);
     return acc;
-  }, {} as Record<typeof continents[number], Country[]>);
+  }, {} as Record<typeof continents[number], any[]>);
 
   // Filter countries
   const getFilteredCountries = () => {
-    let filtered = countries;
+    let filtered = allDisplayCountries;
 
-    if (activeFilter === 'visited') filtered = filtered.filter(c => c.visited);
-    if (activeFilter === 'wishlist') filtered = filtered.filter(c => !c.visited);
+    if (activeFilter === 'visited') filtered = filtered.filter((c: any) => c.visited);
+    if (activeFilter === 'wishlist') filtered = filtered.filter((c: any) => !c.visited);
 
     if (selectedContinent !== 'all') {
-      filtered = filtered.filter(c => c.continent === selectedContinent);
+      filtered = filtered.filter((c: any) => c.continent === selectedContinent);
     }
 
     return filtered;
   };
 
   const filteredCountries = getFilteredCountries();
+
+  const handleCountryClick = (country: any) => {
+    if (country.isMultiCity && country.cities) {
+      setSelectedCityGroup(country.cities);
+    } else {
+      setSelectedCountry(country);
+    }
+  };
 
   return (
     <div style={{
@@ -235,11 +281,11 @@ export default function HomePage() {
           </div>
         ) : (
           continents.map((continent) => {
-            const continentCountries = filteredCountries.filter(c => c.continent === continent);
+            const continentCountries = filteredCountries.filter((c: any) => c.continent === continent);
             if (continentCountries.length === 0) return null;
 
             const colors = continentColors[continent];
-            const visitedInContinent = continentCountries.filter(c => c.visited).length;
+            const visitedInContinent = continentCountries.filter((c: any) => c.visited).length;
 
             return (
               <div key={continent} style={{ marginBottom: '32px' }}>
@@ -277,10 +323,10 @@ export default function HomePage() {
                   gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: '16px',
                 }}>
-                  {continentCountries.map((country, index) => (
+                  {continentCountries.map((country: any, index: number) => (
                     <button
                       key={country.id}
-                      onClick={() => setSelectedCountry(country)}
+                      onClick={() => handleCountryClick(country)}
                       style={{
                         position: 'relative',
                         height: '200px',
@@ -370,7 +416,7 @@ export default function HomePage() {
                             fontSize: '12px',
                             color: country.visited ? '#94a3b8' : '#f472b6',
                           }}>
-                            {country.city}
+                            {country.isMultiCity ? `${country.cities.length} cities` : country.city}
                           </span>
                         </div>
                       </div>
@@ -382,6 +428,135 @@ export default function HomePage() {
           })
         )}
       </div>
+
+      {/* City Selection Modal */}
+      {selectedCityGroup && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.8)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 1001,
+            display: 'flex',
+            alignItems: 'flex-end',
+          }}
+          onClick={() => setSelectedCityGroup(null)}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+              borderTopLeftRadius: '32px',
+              borderTopRightRadius: '32px',
+              padding: '28px 24px 40px',
+              width: '100%',
+              maxHeight: '80vh',
+              overflow: 'auto',
+              animation: 'slide-up 0.3s ease-out',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Handle bar */}
+            <div style={{
+              width: '40px',
+              height: '4px',
+              background: 'rgba(255,255,255,0.2)',
+              borderRadius: '2px',
+              margin: '0 auto 20px',
+            }} />
+
+            <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '24px' }}>
+              <span style={{ fontSize: '56px', marginRight: '16px' }}>{selectedCityGroup[0].flagEmoji}</span>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ fontSize: '28px', fontWeight: 700 }}>{selectedCityGroup[0].name}</h2>
+                <p style={{ color: '#64748b', fontSize: '14px', marginTop: '4px' }}>
+                  Select a city to explore
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedCityGroup(null)}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <X size={20} color="#fff" />
+              </button>
+            </div>
+
+            {/* City Cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {selectedCityGroup.map((city) => (
+                <Link
+                  key={city.id}
+                  href={`/country/${city.id}`}
+                  style={{
+                    position: 'relative',
+                    height: '140px',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    border: '2px solid rgba(20,184,166,0.3)',
+                    display: 'block',
+                  }}
+                >
+                  <Image
+                    src={city.coverImage}
+                    alt={city.city}
+                    fill
+                    style={{
+                      objectFit: 'cover',
+                    }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.8) 100%)',
+                  }} />
+
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '16px',
+                    left: '16px',
+                    right: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                    <div>
+                      <h3 style={{
+                        fontSize: '22px',
+                        fontWeight: 700,
+                        color: '#fff',
+                        marginBottom: '4px',
+                      }}>
+                        {city.city}
+                      </h3>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}>
+                        <MapPin size={12} color="#94a3b8" />
+                        <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+                          {city.places.length} places · {city.experiences.length} experiences
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight size={24} color="#14b8a6" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Country Modal */}
       {selectedCountry && (

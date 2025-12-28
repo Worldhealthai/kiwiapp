@@ -46,19 +46,11 @@ export default function BottomNav() {
               transition: 'all 0.3s ease',
             }}
           >
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '28px',
-              height: '28px',
-            }}>
-              <Icon
-                size={24}
-                color={isActive ? '#14b8a6' : '#64748b'}
-                strokeWidth={isActive ? 2.5 : 2}
-              />
-            </div>
+            <Icon
+              size={22}
+              color={isActive ? '#14b8a6' : '#64748b'}
+              strokeWidth={isActive ? 2.5 : 2}
+            />
             <span style={{
               fontSize: '11px',
               fontWeight: isActive ? 600 : 500,
