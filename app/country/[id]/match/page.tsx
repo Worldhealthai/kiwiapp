@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCountryById } from '@/lib/countries';
-import { X, Heart, Calendar, Users, MessageCircle, Globe, ArrowLeft, Sparkles, MapPin } from 'lucide-react';
+import { X, Heart, Calendar, Users, MessageCircle, Globe, ArrowLeft, Sparkles, MapPin, ChevronRight } from 'lucide-react';
 
 const mockProfiles = [
   {
@@ -58,9 +58,20 @@ export default function MatchPage() {
   const params = useParams();
   const country = getCountryById(params.id as string);
   const [isOptedIn, setIsOptedIn] = useState(false);
+  const [hasSetDates, setHasSetDates] = useState(false);
+  const [travelMonth, setTravelMonth] = useState('');
+  const [travelYear, setTravelYear] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Generate months and years
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 3 }, (_, i) => currentYear + i);
 
   if (!country) {
     return (
@@ -272,7 +283,7 @@ export default function MatchPage() {
               }}
             >
               <Heart size={24} />
-              <span>Start Matching</span>
+              <span>Join Matching System</span>
             </button>
 
             <p style={{
@@ -295,6 +306,223 @@ export default function MatchPage() {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
           }
+          @keyframes slide-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Travel Dates Selection Screen
+  if (isOptedIn && !hasSetDates) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(180deg, #030712 0%, #0f172a 100%)',
+        position: 'relative',
+      }}>
+        {/* Background orbs */}
+        <div style={{
+          position: 'absolute', top: '-100px', right: '-100px',
+          width: '300px', height: '300px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }} />
+
+        <div style={{
+          position: 'relative',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '30px',
+        }}>
+          {/* Back Button */}
+          <button
+            onClick={() => setIsOptedIn(false)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '14px',
+              background: 'rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <ArrowLeft size={20} color="#fff" />
+          </button>
+
+          <div style={{ textAlign: 'center', maxWidth: '400px', width: '100%' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              margin: '0 auto 20px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <Calendar size={40} color="#fff" />
+            </div>
+
+            <h1 style={{
+              fontSize: '32px',
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '8px',
+            }}>
+              When Are You Traveling?
+            </h1>
+
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              marginBottom: '24px',
+            }}>
+              <span style={{ fontSize: '32px' }}>{country.flagEmoji}</span>
+              <p style={{
+                color: '#14b8a6',
+                fontSize: '18px',
+                fontWeight: 600,
+              }}>
+                {country.name}
+              </p>
+            </div>
+
+            <p style={{
+              color: '#94a3b8',
+              marginBottom: '32px',
+              lineHeight: 1.6,
+              fontSize: '15px',
+            }}>
+              Let us know your travel plans so we can match you with travelers on similar dates
+            </p>
+
+            {/* Month Selection */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'block',
+                textAlign: 'left',
+                color: '#e2e8f0',
+                fontSize: '14px',
+                fontWeight: 600,
+                marginBottom: '10px',
+              }}>
+                Travel Month
+              </label>
+              <select
+                value={travelMonth}
+                onChange={(e) => setTravelMonth(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '14px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="" style={{ background: '#1e293b' }}>Select month...</option>
+                {months.map((month) => (
+                  <option key={month} value={month} style={{ background: '#1e293b' }}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Year Selection */}
+            <div style={{ marginBottom: '32px' }}>
+              <label style={{
+                display: 'block',
+                textAlign: 'left',
+                color: '#e2e8f0',
+                fontSize: '14px',
+                fontWeight: 600,
+                marginBottom: '10px',
+              }}>
+                Travel Year
+              </label>
+              <select
+                value={travelYear}
+                onChange={(e) => setTravelYear(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '14px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="" style={{ background: '#1e293b' }}>Select year...</option>
+                {years.map((year) => (
+                  <option key={year} value={year} style={{ background: '#1e293b' }}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={() => setHasSetDates(true)}
+              disabled={!travelMonth || !travelYear}
+              style={{
+                width: '100%',
+                background: travelMonth && travelYear
+                  ? 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)'
+                  : 'rgba(255,255,255,0.1)',
+                padding: '18px 24px',
+                borderRadius: '16px',
+                border: 'none',
+                cursor: travelMonth && travelYear ? 'pointer' : 'not-allowed',
+                fontSize: '16px',
+                fontWeight: 700,
+                color: travelMonth && travelYear ? '#fff' : '#64748b',
+                boxShadow: travelMonth && travelYear ? '0 8px 32px rgba(236,72,153,0.3)' : 'none',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+              }}
+            >
+              <span>Continue to Matches</span>
+              <ChevronRight size={20} />
+            </button>
+
+            <p style={{
+              color: '#64748b',
+              fontSize: '13px',
+              marginTop: '16px',
+            }}>
+              Your travel dates will be shared with potential matches
+            </p>
+          </div>
+        </div>
+
+        <style jsx>{`
           @keyframes slide-up {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -420,20 +648,39 @@ export default function MatchPage() {
       {/* Header */}
       <div style={{
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '8px',
         marginBottom: '20px',
         marginTop: '8px',
       }}>
-        <span style={{ fontSize: '24px' }}>{country.flagEmoji}</span>
-        <span style={{
-          color: '#fff',
-          fontSize: '18px',
-          fontWeight: 700,
-        }}>
-          Travelers to {country.name}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '24px' }}>{country.flagEmoji}</span>
+          <span style={{
+            color: '#fff',
+            fontSize: '18px',
+            fontWeight: 700,
+          }}>
+            Travelers to {country.name}
+          </span>
+        </div>
+        {travelMonth && travelYear && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'rgba(20,184,166,0.15)',
+            padding: '6px 14px',
+            borderRadius: '100px',
+            border: '1px solid rgba(20,184,166,0.3)',
+          }}>
+            <Calendar size={14} color="#14b8a6" />
+            <span style={{ color: '#14b8a6', fontSize: '13px', fontWeight: 600 }}>
+              Your Trip: {travelMonth} {travelYear}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Progress Indicator */}

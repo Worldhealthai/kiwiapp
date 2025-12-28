@@ -257,7 +257,7 @@ export default function CountryDetailPage() {
                     </div>
 
                     {/* Booking Link */}
-                    {place.link && (
+                    {country.visited && place.link && (
                       <a
                         href={place.link}
                         target="_blank"
@@ -321,7 +321,7 @@ export default function CountryDetailPage() {
                 <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.7 }}>
                   {exp.description}
                 </p>
-                {exp.link && (
+                {country.visited && exp.link && (
                   <a
                     href={exp.link}
                     target="_blank"
