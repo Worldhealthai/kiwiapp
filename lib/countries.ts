@@ -1325,8 +1325,7 @@ export const countries: Country[] = [
       },
       {
         name: 'Kourion Ancient Amphitheatre',
-        description: 'An ancient Greco-Roman city with a magnificent amphitheater overlooking the sea - truly unforgettable! Still used for summer performances today. The mosaics in the House of Eustolios are beautiful and well-preserved.',
-        tips: 'Best visited early morning for photography. Combine with a scenic coastal drive.',
+        description: 'An ancient Greco-Roman city with a magnificent amphitheater overlooking the sea - truly unforgettable! Still used for summer performances today. The mosaics in the House of Eustolios are beautiful and well-preserved. Best visited early morning for photography.',
         isBooking: false
       }
     ],
