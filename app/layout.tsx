@@ -4,6 +4,7 @@ import './globals.css'
 import { useState, useEffect } from 'react'
 import BottomNav from '@/components/BottomNav'
 import SplashScreen from '@/components/SplashScreen'
+import { UserJourneyProvider } from '@/contexts/UserJourneyContext'
 
 export default function RootLayout({
   children,
@@ -38,11 +39,13 @@ export default function RootLayout({
         <title>Kiwi Travel · Footsteps</title>
       </head>
       <body>
-        {showSplash && !hasShownSplash && (
-          <SplashScreen onComplete={handleSplashComplete} />
-        )}
-        {children}
-        <BottomNav />
+        <UserJourneyProvider>
+          {showSplash && !hasShownSplash && (
+            <SplashScreen onComplete={handleSplashComplete} />
+          )}
+          {children}
+          <BottomNav />
+        </UserJourneyProvider>
       </body>
     </html>
   )

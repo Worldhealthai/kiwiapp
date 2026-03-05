@@ -4,41 +4,40 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { countries, Country } from '@/lib/countries';
+import { CURATOR } from '@/lib/curator';
+import { useUserJourney } from '@/contexts/UserJourneyContext';
 import {
   X, Compass, MessageCircle, Heart, MapPin, ChevronRight,
-  Sparkles, Globe2, Check, Search, Bell, TrendingUp
+  Sparkles, Globe2, Check, Search, Bell, TrendingUp,
+  BookOpen, PlusCircle, CheckCircle2, Star
 } from 'lucide-react';
 
 const continents = ['Europe', 'Asia', 'Africa', 'North America', 'South America', 'Oceania'] as const;
-
-const continentConfig = {
-  'Europe':        { color: '#a78bfa', glow: 'rgba(167,139,250,0.2)', emoji: '🏰' },
-  'Asia':          { color: '#f472b6', glow: 'rgba(244,114,182,0.2)', emoji: '🏯' },
-  'Africa':        { color: '#fbbf24', glow: 'rgba(251,191,36,0.2)',  emoji: '🦁' },
-  'North America': { color: '#34d399', glow: 'rgba(52,211,153,0.2)',  emoji: '🗽' },
-  'South America': { color: '#f87171', glow: 'rgba(248,113,113,0.2)', emoji: '🌿' },
-  'Oceania':       { color: '#60a5fa', glow: 'rgba(96,165,250,0.2)',  emoji: '🌊' },
+const continentConfig: Record<string, { color: string; glow: string; emoji: string }> = {
+  'Europe':        { color: '#a78bfa', glow: 'rgba(167,139,250,0.12)', emoji: '🏰' },
+  'Asia':          { color: '#f472b6', glow: 'rgba(244,114,182,0.12)', emoji: '🏯' },
+  'Africa':        { color: '#fbbf24', glow: 'rgba(251,191,36,0.12)',  emoji: '🦁' },
+  'North America': { color: '#34d399', glow: 'rgba(52,211,153,0.12)',  emoji: '🗽' },
+  'South America': { color: '#f87171', glow: 'rgba(248,113,113,0.12)', emoji: '🌿' },
+  'Oceania':       { color: '#60a5fa', glow: 'rgba(96,165,250,0.12)',  emoji: '🌊' },
 };
 
-type ContinentKey = typeof continents[number];
-
 export default function HomePage() {
+  const { getUserStatus, markVisited, addToWishlist, removeFromJourney } = useUserJourney();
+
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedCityGroup, setSelectedCityGroup] = useState<Country[] | null>(null);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'visited' | 'wishlist'>('all');
-  const [selectedContinent, setSelectedContinent] = useState<ContinentKey | 'all'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'curator' | 'myjourney'>('all');
+  const [selectedContinent, setSelectedContinent] = useState<string>('all');
   const [search, setSearch] = useState('');
 
-  const visitedCount = countries.filter(c => c.visited && !c.parentCountry).length;
-  const wishlistCount = countries.filter(c => !c.visited && !c.parentCountry).length;
-  const totalCount = visitedCount + wishlistCount;
-  const progressPct = Math.round((visitedCount / totalCount) * 100);
+  // Curator stats (hardcoded data)
+  const curatorVisited = countries.filter(c => c.visited && !c.parentCountry).length;
 
-  // Group multi-city countries
+  // Build display countries (group multi-city)
   const displayCountries = useMemo(() => {
     const grouped = new Map<string, Country[]>();
     const standalone: Country[] = [];
-
     countries.forEach(c => {
       if (c.parentCountry) {
         if (!grouped.has(c.parentCountry)) grouped.set(c.parentCountry, []);
@@ -47,34 +46,33 @@ export default function HomePage() {
         standalone.push(c);
       }
     });
-
-    const result: Array<Country & { isMultiCity?: boolean; cities?: Country[] }> = [];
-    grouped.forEach((cities) => {
-      result.push({ ...cities[0], isMultiCity: true, cities } as any);
-    });
+    const result: any[] = [];
+    grouped.forEach(cities => result.push({ ...cities[0], isMultiCity: true, cities }));
     standalone.forEach(c => result.push(c));
     return result;
   }, []);
 
-  // Featured = visited countries with best images (first 5)
+  // Featured = curator's visited places
   const featured = displayCountries.filter((c: any) => c.visited).slice(0, 5);
 
-  // Filtered list
   const filtered = useMemo(() => {
     let list = displayCountries;
-    if (activeFilter === 'visited') list = list.filter((c: any) => c.visited);
-    if (activeFilter === 'wishlist') list = list.filter((c: any) => !c.visited);
-    if (selectedContinent !== 'all') list = list.filter((c: any) => c.continent === selectedContinent);
+    if (activeFilter === 'curator')   list = list.filter((c: any) => c.visited);
+    if (activeFilter === 'myjourney') list = list.filter((c: any) => {
+      const status = getUserStatus(c.isMultiCity ? c.cities[0].id : c.id);
+      return status === 'visited' || status === 'wishlist';
+    });
+    if (selectedContinent !== 'all')  list = list.filter((c: any) => c.continent === selectedContinent);
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((c: any) =>
         c.name.toLowerCase().includes(q) ||
         c.city?.toLowerCase().includes(q) ||
-        c.continent.toLowerCase().includes(q)
+        c.continent?.toLowerCase().includes(q)
       );
     }
     return list;
-  }, [displayCountries, activeFilter, selectedContinent, search]);
+  }, [displayCountries, activeFilter, selectedContinent, search, getUserStatus]);
 
   const handleCountryClick = (country: any) => {
     if (country.isMultiCity && country.cities) {
@@ -84,50 +82,49 @@ export default function HomePage() {
     }
   };
 
+  const getJourneyAction = (country: Country) => {
+    const status = getUserStatus(country.id);
+    if (status === 'visited') {
+      return { label: 'Remove from journey', action: () => removeFromJourney(country.id), color: '#ef4444' };
+    }
+    return null;
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
 
-      {/* ── Sticky Header ── */}
+      {/* Sticky header */}
       <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
+        position: 'sticky', top: 0, zIndex: 100,
         paddingTop: 'env(safe-area-inset-top, 0px)',
-        background: 'rgba(3,7,18,0.85)',
+        background: 'rgba(3,7,18,0.88)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         <div style={{ padding: '14px 20px 12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-              <Globe2 size={14} color="#14b8a6" />
-              <span style={{ color: '#14b8a6', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '1px' }}>
+              <Globe2 size={13} color="#14b8a6" />
+              <span style={{ color: '#14b8a6', fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                 Kiwi Travel
               </span>
             </div>
             <h1 style={{
-              fontSize: '22px',
-              fontWeight: 800,
+              fontSize: '22px', fontWeight: 800,
               background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
             }}>
               Footsteps
             </h1>
           </div>
-          <button
-            className="pressable"
-            style={{
-              width: '42px', height: '42px',
-              borderRadius: '14px',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              position: 'relative',
-            }}
-          >
+          <button className="pressable" style={{
+            width: '42px', height: '42px', borderRadius: '14px',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            position: 'relative',
+          }}>
             <Bell size={18} color="#94a3b8" />
             <div style={{
               position: 'absolute', top: '10px', right: '10px',
@@ -136,36 +133,22 @@ export default function HomePage() {
               border: '1.5px solid #030712',
             }} />
           </button>
-          <Link href="/profile" className="pressable">
-            <div style={{
-              width: '42px', height: '42px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, rgba(20,184,166,0.2) 0%, rgba(236,72,153,0.2) 100%)',
-              border: '1px solid rgba(20,184,166,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden',
-            }}>
-              <Image
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100"
-                alt="Profile"
-                width={42}
-                height={42}
-                style={{ objectFit: 'cover' }}
-              />
-            </div>
+          <Link href="/profile" className="pressable" style={{
+            width: '42px', height: '42px', borderRadius: '14px',
+            overflow: 'hidden',
+            border: '1.5px solid rgba(20,184,166,0.3)',
+          }}>
+            <Image src={CURATOR.avatar} alt="Profile" width={42} height={42} style={{ objectFit: 'cover' }} />
           </Link>
         </div>
 
-        {/* Search bar */}
+        {/* Search */}
         <div style={{ padding: '0 20px 14px' }}>
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
+            display: 'flex', alignItems: 'center', gap: '10px',
             background: 'rgba(255,255,255,0.05)',
             border: `1px solid ${search ? 'rgba(20,184,166,0.4)' : 'rgba(255,255,255,0.08)'}`,
-            borderRadius: '14px',
-            padding: '11px 16px',
+            borderRadius: '14px', padding: '11px 16px',
             transition: 'border-color 0.2s ease',
           }}>
             <Search size={16} color={search ? '#14b8a6' : '#475569'} style={{ flexShrink: 0, transition: 'color 0.2s ease' }} />
@@ -174,14 +157,7 @@ export default function HomePage() {
               placeholder="Search destinations..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                background: 'none',
-                border: 'none',
-                color: '#f8fafc',
-                fontSize: '15px',
-                outline: 'none',
-              }}
+              style={{ flex: 1, background: 'none', border: 'none', color: '#f8fafc', fontSize: '15px' }}
             />
             {search && (
               <button onClick={() => setSearch('')} className="pressable">
@@ -192,115 +168,105 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Progress Banner ── */}
-      {!search && (
-        <div style={{ padding: '20px 20px 0' }}>
+      {/* Curator intro banner — shown when "all" filter, no search */}
+      {!search && activeFilter === 'all' && (
+        <div style={{ padding: '16px 20px 0' }}>
           <div style={{
-            background: 'linear-gradient(135deg, rgba(20,184,166,0.1) 0%, rgba(139,92,246,0.1) 100%)',
-            border: '1px solid rgba(20,184,166,0.2)',
+            background: 'linear-gradient(135deg, rgba(20,184,166,0.1) 0%, rgba(139,92,246,0.08) 100%)',
+            border: '1px solid rgba(20,184,166,0.18)',
             borderRadius: '20px',
-            padding: '18px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            animation: 'slide-up 0.5s ease-out',
+            padding: '16px',
+            display: 'flex', alignItems: 'center', gap: '14px',
+            animation: 'slide-up 0.4s ease-out',
           }}>
-            <div style={{
-              width: '52px', height: '52px',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #14b8a6 0%, #8b5cf6 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <TrendingUp size={24} color="#fff" />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ color: '#e2e8f0', fontSize: '14px', fontWeight: 600 }}>World Explorer</span>
-                <span style={{ color: '#14b8a6', fontSize: '14px', fontWeight: 700 }}>{progressPct}%</span>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: '52px', height: '52px', borderRadius: '16px',
+                overflow: 'hidden',
+                border: '2px solid rgba(20,184,166,0.4)',
+              }}>
+                <Image src={CURATOR.avatar} alt={CURATOR.name} width={52} height={52} style={{ objectFit: 'cover' }} />
               </div>
               <div style={{
-                height: '6px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '3px',
-                overflow: 'hidden',
+                position: 'absolute', bottom: '-3px', right: '-3px',
+                width: '18px', height: '18px',
+                borderRadius: '6px',
+                background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                border: '2px solid #030712',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <div style={{
-                  width: `${progressPct}%`,
-                  height: '100%',
-                  background: 'linear-gradient(90deg, #14b8a6, #8b5cf6)',
-                  borderRadius: '3px',
-                  transition: 'width 1s ease',
-                }} />
+                <BookOpen size={9} color="#fff" />
               </div>
-              <p style={{ color: '#64748b', fontSize: '12px', marginTop: '6px' }}>
-                {visitedCount} visited · {wishlistCount} on your wishlist
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ color: '#f8fafc', fontSize: '14px', fontWeight: 700 }}>
+                Kiwifootsteps Guide
+              </p>
+              <p style={{ color: '#64748b', fontSize: '12px', marginTop: '2px', lineHeight: 1.5 }}>
+                {curatorVisited} countries explored · browse guides &amp; track your own journey
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* ── Featured (horizontal scroll of visited) ── */}
-      {!search && activeFilter !== 'wishlist' && featured.length > 0 && (
-        <div style={{ marginTop: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', marginBottom: '14px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>My Footsteps</h2>
-            <span style={{ color: '#14b8a6', fontSize: '13px', fontWeight: 600 }}>{visitedCount} places</span>
+      {/* Featured curator countries */}
+      {!search && activeFilter !== 'myjourney' && featured.length > 0 && (
+        <div style={{ marginTop: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', marginBottom: '12px' }}>
+            <div>
+              <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc' }}>Kiwifootsteps</h2>
+              <p style={{ color: '#64748b', fontSize: '12px', marginTop: '1px' }}>Places with first-hand guides</p>
+            </div>
+            <span style={{ color: '#14b8a6', fontSize: '12px', fontWeight: 600 }}>{curatorVisited} guides</span>
           </div>
-          <div
-            className="hide-scrollbar"
-            style={{
-              display: 'flex',
-              gap: '12px',
-              padding: '0 20px 4px',
-              overflowX: 'auto',
-            }}
-          >
-            {featured.map((country: any, i) => (
+          <div className="hide-scrollbar" style={{ display: 'flex', gap: '12px', padding: '0 20px 4px', overflowX: 'auto' }}>
+            {featured.map((country: any, i: number) => (
               <button
                 key={country.id}
                 onClick={() => handleCountryClick(country)}
                 className="pressable"
                 style={{
-                  position: 'relative',
-                  width: '140px',
-                  height: '190px',
-                  flexShrink: 0,
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  border: '1.5px solid rgba(20,184,166,0.25)',
+                  position: 'relative', width: '140px', height: '190px',
+                  flexShrink: 0, borderRadius: '20px', overflow: 'hidden',
+                  border: '1.5px solid rgba(20,184,166,0.3)',
                   animation: 'slide-up 0.4s ease-out forwards',
-                  animationDelay: `${i * 0.06}s`,
-                  opacity: 0,
+                  animationDelay: `${i * 0.06}s`, opacity: 0,
                 }}
               >
-                <Image
-                  src={country.coverImage}
-                  alt={country.name}
-                  fill
-                  sizes="140px"
-                  style={{ objectFit: 'cover' }}
-                />
+                <Image src={country.coverImage} alt={country.name} fill sizes="140px" style={{ objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.78) 100%)' }} />
+                {/* Curator badge */}
                 <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 100%)',
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: '10px', right: '10px',
+                  position: 'absolute', top: '9px', left: '9px',
                   background: 'rgba(20,184,166,0.9)',
-                  borderRadius: '8px',
-                  padding: '3px 7px',
+                  borderRadius: '7px', padding: '3px 7px',
                   display: 'flex', alignItems: 'center', gap: '3px',
                 }}>
-                  <Check size={10} color="#fff" />
-                  <span style={{ color: '#fff', fontSize: '9px', fontWeight: 700 }}>VISITED</span>
+                  <BookOpen size={9} color="#fff" />
+                  <span style={{ color: '#fff', fontSize: '9px', fontWeight: 700 }}>GUIDE</span>
                 </div>
+                {/* User status badge */}
+                {getUserStatus(country.id) && (
+                  <div style={{
+                    position: 'absolute', top: '9px', right: '9px',
+                    background: getUserStatus(country.id) === 'visited' ? 'rgba(34,197,94,0.9)' : 'rgba(236,72,153,0.9)',
+                    borderRadius: '7px', padding: '3px 7px',
+                    display: 'flex', alignItems: 'center', gap: '3px',
+                  }}>
+                    {getUserStatus(country.id) === 'visited'
+                      ? <Check size={9} color="#fff" />
+                      : <Star size={9} color="#fff" />
+                    }
+                    <span style={{ color: '#fff', fontSize: '9px', fontWeight: 700 }}>
+                      {getUserStatus(country.id) === 'visited' ? 'BEEN' : 'WANT'}
+                    </span>
+                  </div>
+                )}
                 <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px' }}>
-                  <span style={{ fontSize: '24px' }}>{country.flagEmoji}</span>
-                  <p style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginTop: '4px', lineHeight: 1.2 }}>{country.name}</p>
-                  <p style={{ color: '#94a3b8', fontSize: '11px', marginTop: '2px' }}>{country.city}</p>
+                  <span style={{ fontSize: '22px' }}>{country.flagEmoji}</span>
+                  <p style={{ color: '#fff', fontSize: '13px', fontWeight: 700, marginTop: '4px', lineHeight: 1.2 }}>{country.name}</p>
+                  <p style={{ color: '#94a3b8', fontSize: '10px', marginTop: '2px' }}>{country.city}</p>
                 </div>
               </button>
             ))}
@@ -308,45 +274,33 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Filters ── */}
-      <div style={{ padding: '24px 20px 0' }}>
-        {/* Status filter */}
+      {/* Filters */}
+      <div style={{ padding: '20px 20px 0' }}>
+        {/* View switch */}
         <div style={{
           display: 'flex',
           background: 'rgba(255,255,255,0.04)',
           border: '1px solid rgba(255,255,255,0.07)',
           borderRadius: '14px',
-          padding: '4px',
-          marginBottom: '14px',
-          gap: '4px',
+          padding: '4px', marginBottom: '12px', gap: '4px',
         }}>
           {[
-            { key: 'all', label: 'All' },
-            { key: 'visited', label: '✓ Visited' },
-            { key: 'wishlist', label: '✦ Wishlist' },
+            { key: 'all',        label: '🌍 Discover' },
+            { key: 'curator',    label: '📸 Kiwifootsteps' },
+            { key: 'myjourney',  label: '✈️ My Journey' },
           ].map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setActiveFilter(key as any)}
               className="pressable"
               style={{
-                flex: 1,
-                padding: '9px 8px',
+                flex: 1, padding: '9px 4px',
                 borderRadius: '10px',
-                background: activeFilter === key
-                  ? key === 'visited'
-                    ? 'linear-gradient(135deg, rgba(20,184,166,0.3) 0%, rgba(20,184,166,0.15) 100%)'
-                    : key === 'wishlist'
-                    ? 'linear-gradient(135deg, rgba(236,72,153,0.3) 0%, rgba(236,72,153,0.15) 100%)'
-                    : 'rgba(255,255,255,0.1)'
-                  : 'transparent',
-                color: activeFilter === key
-                  ? key === 'visited' ? '#2dd4bf' : key === 'wishlist' ? '#f472b6' : '#f8fafc'
-                  : '#64748b',
-                fontSize: '13px',
-                fontWeight: 600,
+                background: activeFilter === key ? 'rgba(255,255,255,0.1)' : 'transparent',
+                color: activeFilter === key ? '#f8fafc' : '#64748b',
+                fontSize: '11px', fontWeight: 600,
                 transition: 'all 0.2s ease',
-                border: 'none',
+                whiteSpace: 'nowrap',
               }}
             >
               {label}
@@ -355,27 +309,21 @@ export default function HomePage() {
         </div>
 
         {/* Continent pills */}
-        <div
-          className="hide-scrollbar"
-          style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}
-        >
+        <div className="hide-scrollbar" style={{ display: 'flex', gap: '7px', overflowX: 'auto', paddingBottom: '4px' }}>
           <button
             onClick={() => setSelectedContinent('all')}
             className="pressable"
             style={{
-              padding: '8px 16px',
-              borderRadius: '100px',
+              padding: '7px 14px', borderRadius: '100px',
               border: `1px solid ${selectedContinent === 'all' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
               background: selectedContinent === 'all' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
               color: selectedContinent === 'all' ? '#fff' : '#64748b',
-              fontSize: '12px', fontWeight: 600,
-              whiteSpace: 'nowrap',
-              transition: 'all 0.2s ease',
+              fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap',
             }}
           >
             🌍 All
           </button>
-          {continents.map((cont) => {
+          {continents.map(cont => {
             const cfg = continentConfig[cont];
             const isSelected = selectedContinent === cont;
             return (
@@ -384,14 +332,11 @@ export default function HomePage() {
                 onClick={() => setSelectedContinent(cont)}
                 className="pressable"
                 style={{
-                  padding: '8px 16px',
-                  borderRadius: '100px',
-                  border: `1px solid ${isSelected ? cfg.color + '66' : 'rgba(255,255,255,0.07)'}`,
+                  padding: '7px 14px', borderRadius: '100px',
+                  border: `1px solid ${isSelected ? cfg.color + '55' : 'rgba(255,255,255,0.07)'}`,
                   background: isSelected ? cfg.glow : 'rgba(255,255,255,0.03)',
                   color: isSelected ? cfg.color : '#64748b',
-                  fontSize: '12px', fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.2s ease',
+                  fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap',
                   display: 'flex', alignItems: 'center', gap: '5px',
                 }}
               >
@@ -403,129 +348,147 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Country Grid ── */}
-      <div style={{ padding: '20px 20px 0' }}>
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px', animation: 'fade-in 0.3s ease-out' }}>
-            <Globe2 size={48} color="#1e293b" style={{ margin: '0 auto 16px' }} />
-            <p style={{ fontSize: '16px', fontWeight: 600, color: '#475569' }}>No destinations found</p>
-            <p style={{ fontSize: '14px', color: '#334155', marginTop: '6px' }}>Try a different filter or search</p>
+      {/* My Journey empty state */}
+      {activeFilter === 'myjourney' && filtered.length === 0 && (
+        <div style={{ padding: '40px 20px', textAlign: 'center', animation: 'fade-in 0.3s ease-out' }}>
+          <div style={{
+            width: '72px', height: '72px', margin: '0 auto 20px',
+            borderRadius: '24px',
+            background: 'rgba(20,184,166,0.1)',
+            border: '1px solid rgba(20,184,166,0.2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Globe2 size={32} color="#14b8a6" />
           </div>
-        ) : (
-          continents.map((cont) => {
-            const group = filtered.filter((c: any) => c.continent === cont);
-            if (group.length === 0) return null;
-            const cfg = continentConfig[cont];
-            const visitedInContinent = group.filter((c: any) => c.visited).length;
+          <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}>Your journey starts here</h3>
+          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: 1.6, maxWidth: '260px', margin: '0 auto 20px' }}>
+            Tap any destination and mark it as visited or add it to your wishlist
+          </p>
+          <button
+            onClick={() => setActiveFilter('all')}
+            className="pressable"
+            style={{
+              background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+              padding: '12px 24px', borderRadius: '14px',
+              color: '#fff', fontSize: '14px', fontWeight: 700,
+              border: 'none',
+              boxShadow: '0 6px 20px rgba(20,184,166,0.3)',
+            }}
+          >
+            Browse Destinations
+          </button>
+        </div>
+      )}
 
-            return (
-              <div key={cont} style={{ marginBottom: '36px' }}>
-                {/* Continent header */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '12px 16px',
-                  background: cfg.glow,
-                  border: `1px solid ${cfg.color}33`,
-                  borderRadius: '16px',
-                  marginBottom: '14px',
-                }}>
-                  <span style={{ fontSize: '24px' }}>{cfg.emoji}</span>
-                  <div style={{ flex: 1 }}>
-                    <h2 style={{ fontSize: '16px', fontWeight: 700, color: cfg.color }}>{cont}</h2>
-                    <p style={{ fontSize: '11px', color: '#64748b', marginTop: '1px' }}>
-                      {group.length} {group.length === 1 ? 'destination' : 'destinations'}
-                      {visitedInContinent > 0 && ` · ${visitedInContinent} visited`}
-                    </p>
-                  </div>
-                </div>
+      {/* Country grid */}
+      <div style={{ padding: '16px 20px 0' }}>
+        {filtered.length > 0 && continents.map(cont => {
+          const group = filtered.filter((c: any) => c.continent === cont);
+          if (group.length === 0) return null;
+          const cfg = continentConfig[cont];
+          return (
+            <div key={cont} style={{ marginBottom: '32px' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                padding: '10px 14px',
+                background: cfg.glow,
+                border: `1px solid ${cfg.color}2a`,
+                borderRadius: '14px',
+                marginBottom: '12px',
+              }}>
+                <span style={{ fontSize: '22px' }}>{cfg.emoji}</span>
+                <h2 style={{ fontSize: '15px', fontWeight: 700, color: cfg.color, flex: 1 }}>{cont}</h2>
+                <span style={{ color: '#64748b', fontSize: '11px' }}>{group.length} places</span>
+              </div>
 
-                {/* Cards grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                  {group.map((country: any, i: number) => (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                {group.map((country: any, i: number) => {
+                  const cId = country.isMultiCity ? country.cities[0].id : country.id;
+                  const userStatus = getUserStatus(cId);
+                  return (
                     <button
                       key={country.id}
                       onClick={() => handleCountryClick(country)}
                       className="card-press"
                       style={{
-                        position: 'relative',
-                        height: '210px',
-                        borderRadius: '20px',
-                        overflow: 'hidden',
-                        border: country.visited
-                          ? '1.5px solid rgba(20,184,166,0.3)'
-                          : '1.5px solid rgba(255,255,255,0.06)',
+                        position: 'relative', height: '210px',
+                        borderRadius: '18px', overflow: 'hidden',
                         textAlign: 'left',
-                        animation: 'slide-up 0.45s ease-out forwards',
-                        animationDelay: `${i * 0.05}s`,
-                        opacity: 0,
+                        border: userStatus
+                          ? userStatus === 'visited' ? '1.5px solid rgba(34,197,94,0.4)' : '1.5px solid rgba(236,72,153,0.35)'
+                          : country.visited ? '1.5px solid rgba(20,184,166,0.25)' : '1.5px solid rgba(255,255,255,0.06)',
+                        animation: 'slide-up 0.4s ease-out forwards',
+                        animationDelay: `${i * 0.05}s`, opacity: 0,
                       }}
                     >
                       <Image
                         src={country.coverImage}
                         alt={country.name}
-                        fill
-                        sizes="(max-width: 640px) 50vw, 200px"
-                        style={{
-                          objectFit: 'cover',
-                          filter: country.visited ? 'none' : 'brightness(0.75)',
-                        }}
+                        fill sizes="(max-width:640px) 50vw, 200px"
+                        style={{ objectFit: 'cover', filter: country.visited ? 'none' : 'brightness(0.75)' }}
                       />
-                      {/* Overlay */}
                       <div style={{
                         position: 'absolute', inset: 0,
                         background: country.visited
-                          ? 'linear-gradient(180deg, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.82) 100%)'
-                          : 'linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.88) 100%)',
+                          ? 'linear-gradient(180deg,rgba(0,0,0,0.05) 30%,rgba(0,0,0,0.82) 100%)'
+                          : 'linear-gradient(180deg,rgba(0,0,0,0.25) 0%,rgba(0,0,0,0.88) 100%)',
                       }} />
 
-                      {/* Badge */}
-                      <div style={{
-                        position: 'absolute', top: '10px', right: '10px',
-                        background: country.visited ? 'rgba(20,184,166,0.92)' : 'rgba(0,0,0,0.55)',
-                        backdropFilter: 'blur(4px)',
-                        border: country.visited ? 'none' : '1px solid rgba(255,255,255,0.15)',
-                        padding: '4px 8px',
-                        borderRadius: '8px',
-                        display: 'flex', alignItems: 'center', gap: '3px',
-                      }}>
-                        {country.visited
-                          ? <Check size={10} color="#fff" />
-                          : <Sparkles size={10} color="#f472b6" />
-                        }
-                        <span style={{
-                          color: country.visited ? '#fff' : '#f472b6',
-                          fontSize: '9px', fontWeight: 700,
+                      {/* Curator guide badge (top left) */}
+                      {country.visited && (
+                        <div style={{
+                          position: 'absolute', top: '9px', left: '9px',
+                          background: 'rgba(20,184,166,0.88)',
+                          backdropFilter: 'blur(4px)',
+                          borderRadius: '7px', padding: '3px 7px',
+                          display: 'flex', alignItems: 'center', gap: '3px',
                         }}>
-                          {country.visited ? 'VISITED' : 'WISH'}
-                        </span>
-                      </div>
+                          <BookOpen size={9} color="#fff" />
+                          <span style={{ color: '#fff', fontSize: '9px', fontWeight: 700 }}>GUIDE</span>
+                        </div>
+                      )}
 
-                      {/* Info */}
-                      <div style={{ position: 'absolute', bottom: '14px', left: '14px', right: '14px' }}>
-                        <span style={{ fontSize: '26px', lineHeight: 1 }}>{country.flagEmoji}</span>
-                        <h3 style={{
-                          fontSize: '15px', fontWeight: 700, color: '#fff',
-                          marginTop: '6px', lineHeight: 1.2,
+                      {/* User status badge (top right) */}
+                      {userStatus && (
+                        <div style={{
+                          position: 'absolute', top: '9px', right: '9px',
+                          background: userStatus === 'visited' ? 'rgba(34,197,94,0.9)' : 'rgba(236,72,153,0.9)',
+                          backdropFilter: 'blur(4px)',
+                          borderRadius: '7px', padding: '3px 7px',
+                          display: 'flex', alignItems: 'center', gap: '3px',
                         }}>
+                          {userStatus === 'visited'
+                            ? <Check size={9} color="#fff" />
+                            : <Star size={9} color="#fff" />
+                          }
+                          <span style={{ color: '#fff', fontSize: '9px', fontWeight: 700 }}>
+                            {userStatus === 'visited' ? 'BEEN' : 'WANT'}
+                          </span>
+                        </div>
+                      )}
+
+                      <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px' }}>
+                        <span style={{ fontSize: '24px', lineHeight: 1 }}>{country.flagEmoji}</span>
+                        <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', marginTop: '5px', lineHeight: 1.2 }}>
                           {country.name}
                         </h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginTop: '4px' }}>
-                          <MapPin size={10} color={country.visited ? '#94a3b8' : '#f472b6'} />
-                          <span style={{ fontSize: '11px', color: country.visited ? '#94a3b8' : '#f472b6' }}>
+                          <MapPin size={9} color="#94a3b8" />
+                          <span style={{ fontSize: '10px', color: '#94a3b8' }}>
                             {country.isMultiCity ? `${country.cities.length} cities` : country.city}
                           </span>
                         </div>
                       </div>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            );
-          })
-        )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* ── City Selection Sheet ── */}
+      {/* City group sheet */}
       {selectedCityGroup && (
         <div
           style={{
@@ -533,8 +496,7 @@ export default function HomePage() {
             background: 'rgba(0,0,0,0.75)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
-            zIndex: 1001,
-            display: 'flex', alignItems: 'flex-end',
+            zIndex: 1001, display: 'flex', alignItems: 'flex-end',
           }}
           onClick={() => setSelectedCityGroup(null)}
         >
@@ -543,64 +505,44 @@ export default function HomePage() {
             style={{
               background: 'linear-gradient(180deg, #1a2744 0%, #0f172a 100%)',
               borderTop: '1px solid rgba(255,255,255,0.08)',
-              borderTopLeftRadius: '28px',
-              borderTopRightRadius: '28px',
+              borderTopLeftRadius: '28px', borderTopRightRadius: '28px',
               padding: '20px 20px calc(20px + env(safe-area-inset-bottom, 0px))',
-              width: '100%',
-              maxHeight: '82vh',
-              overflow: 'auto',
-              animation: 'slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              width: '100%', maxHeight: '82vh', overflow: 'auto',
+              animation: 'slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1)',
             }}
           >
-            {/* Handle */}
             <div style={{ width: '36px', height: '4px', background: 'rgba(255,255,255,0.15)', borderRadius: '2px', margin: '0 auto 20px' }} />
-
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
               <span style={{ fontSize: '44px' }}>{selectedCityGroup[0].flagEmoji}</span>
               <div style={{ flex: 1 }}>
                 <h2 style={{ fontSize: '22px', fontWeight: 800 }}>{selectedCityGroup[0].name}</h2>
-                <p style={{ color: '#64748b', fontSize: '13px', marginTop: '2px' }}>
-                  {selectedCityGroup.length} cities to explore
-                </p>
+                <p style={{ color: '#64748b', fontSize: '13px' }}>{selectedCityGroup.length} cities · Kiwifootsteps guides</p>
               </div>
-              <button
-                onClick={() => setSelectedCityGroup(null)}
-                className="pressable"
-                style={{
-                  width: '36px', height: '36px',
-                  borderRadius: '12px',
-                  background: 'rgba(255,255,255,0.08)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
+              <button onClick={() => setSelectedCityGroup(null)} className="pressable" style={{
+                width: '36px', height: '36px', borderRadius: '12px',
+                background: 'rgba(255,255,255,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
                 <X size={18} color="#94a3b8" />
               </button>
             </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {selectedCityGroup.map(city => (
-                <Link
-                  key={city.id}
-                  href={`/country/${city.id}`}
-                  className="pressable"
-                  style={{
-                    position: 'relative',
-                    height: '120px',
-                    borderRadius: '18px',
-                    overflow: 'hidden',
-                    border: '1.5px solid rgba(20,184,166,0.25)',
-                    display: 'block',
-                  }}
-                >
+                <Link key={city.id} href={`/country/${city.id}`} className="pressable" style={{
+                  position: 'relative', height: '110px',
+                  borderRadius: '16px', overflow: 'hidden',
+                  border: '1.5px solid rgba(20,184,166,0.2)',
+                  display: 'block',
+                }}>
                   <Image src={city.coverImage} alt={city.city} fill sizes="100vw" style={{ objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.78) 100%)' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,transparent 20%,rgba(0,0,0,0.78) 100%)' }} />
                   <div style={{
-                    position: 'absolute', bottom: '14px', left: '16px', right: '16px',
+                    position: 'absolute', bottom: '12px', left: '14px', right: '14px',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   }}>
                     <div>
-                      <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff' }}>{city.city}</h3>
-                      <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '2px' }}>
+                      <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#fff' }}>{city.city}</h3>
+                      <p style={{ color: '#94a3b8', fontSize: '11px', marginTop: '2px' }}>
                         {city.places.length} places · {city.experiences.length} experiences
                       </p>
                     </div>
@@ -613,7 +555,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Country Quick-View Sheet ── */}
+      {/* Country quick-view + journey actions sheet */}
       {selectedCountry && (
         <div
           style={{
@@ -621,8 +563,7 @@ export default function HomePage() {
             background: 'rgba(0,0,0,0.75)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
-            zIndex: 1001,
-            display: 'flex', alignItems: 'flex-end',
+            zIndex: 1001, display: 'flex', alignItems: 'flex-end',
           }}
           onClick={() => setSelectedCountry(null)}
         >
@@ -631,81 +572,136 @@ export default function HomePage() {
             style={{
               background: 'linear-gradient(180deg, #1a2744 0%, #0f172a 100%)',
               borderTop: '1px solid rgba(255,255,255,0.08)',
-              borderTopLeftRadius: '28px',
-              borderTopRightRadius: '28px',
-              width: '100%',
-              maxHeight: '85vh',
-              overflow: 'auto',
-              animation: 'slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              borderTopLeftRadius: '28px', borderTopRightRadius: '28px',
+              width: '100%', maxHeight: '90vh', overflow: 'auto',
+              animation: 'slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1)',
             }}
           >
-            {/* Hero Image */}
-            <div style={{ position: 'relative', height: '200px' }}>
-              <Image
-                src={selectedCountry.coverImage}
-                alt={selectedCountry.name}
-                fill
-                sizes="100vw"
-                style={{ objectFit: 'cover' }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(26,39,68,0.95) 100%)' }} />
+            {/* Hero */}
+            <div style={{ position: 'relative', height: '180px' }}>
+              <Image src={selectedCountry.coverImage} alt={selectedCountry.name} fill sizes="100vw" style={{ objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(26,39,68,0.95) 100%)' }} />
               <button
                 onClick={() => setSelectedCountry(null)}
                 className="pressable"
                 style={{
                   position: 'absolute', top: '14px', right: '14px',
-                  width: '36px', height: '36px',
-                  borderRadius: '12px',
-                  background: 'rgba(0,0,0,0.5)',
-                  backdropFilter: 'blur(8px)',
+                  width: '34px', height: '34px', borderRadius: '11px',
+                  background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   border: '1px solid rgba(255,255,255,0.1)',
                 }}
               >
-                <X size={18} color="#fff" />
+                <X size={17} color="#fff" />
               </button>
             </div>
 
-            <div style={{ padding: '20px 20px calc(20px + env(safe-area-inset-bottom, 0px))' }}>
-              {/* Country info */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
+            <div style={{ padding: '18px 20px calc(20px + env(safe-area-inset-bottom, 0px))' }}>
+              {/* Country header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
                 <span style={{ fontSize: '44px' }}>{selectedCountry.flagEmoji}</span>
                 <div style={{ flex: 1 }}>
                   <h2 style={{ fontSize: '24px', fontWeight: 800 }}>{selectedCountry.name}</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
                     <MapPin size={12} color="#64748b" />
                     <span style={{ color: '#64748b', fontSize: '13px' }}>{selectedCountry.city}</span>
-                    <span style={{ color: '#1e293b', fontSize: '13px' }}>·</span>
-                    <span style={{
-                      color: continentConfig[selectedCountry.continent as ContinentKey]?.color ?? '#94a3b8',
-                      fontSize: '12px', fontWeight: 600
-                    }}>
-                      {selectedCountry.continent}
-                    </span>
                   </div>
                 </div>
-                <div style={{
-                  background: selectedCountry.visited ? 'rgba(20,184,166,0.15)' : 'rgba(236,72,153,0.15)',
-                  border: `1px solid ${selectedCountry.visited ? 'rgba(20,184,166,0.3)' : 'rgba(236,72,153,0.3)'}`,
-                  borderRadius: '10px',
-                  padding: '6px 10px',
-                  display: 'flex', alignItems: 'center', gap: '4px',
-                }}>
-                  {selectedCountry.visited
-                    ? <Check size={14} color="#14b8a6" />
-                    : <Sparkles size={14} color="#ec4899" />
-                  }
-                  <span style={{
-                    fontSize: '11px', fontWeight: 700,
-                    color: selectedCountry.visited ? '#14b8a6' : '#ec4899',
+                {/* Curator visited badge */}
+                {selectedCountry.visited && (
+                  <div style={{
+                    background: 'rgba(20,184,166,0.12)',
+                    border: '1px solid rgba(20,184,166,0.25)',
+                    borderRadius: '10px', padding: '6px 10px',
+                    display: 'flex', alignItems: 'center', gap: '5px',
                   }}>
-                    {selectedCountry.visited ? 'VISITED' : 'WISHLIST'}
-                  </span>
-                </div>
+                    <Image src={CURATOR.avatar} alt={CURATOR.name} width={16} height={16} style={{ borderRadius: '5px', objectFit: 'cover' }} />
+                    <span style={{ color: '#14b8a6', fontSize: '10px', fontWeight: 700 }}>KIWI GUIDE</span>
+                  </div>
+                )}
               </div>
 
-              {/* Stats row */}
-              <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              {/* ── ADD TO MY JOURNEY ── */}
+              <div style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: '18px',
+                padding: '16px',
+                marginBottom: '14px',
+              }}>
+                <p style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '12px' }}>
+                  My Journey
+                </p>
+
+                {(() => {
+                  const status = getUserStatus(selectedCountry.id);
+                  return (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => markVisited(selectedCountry.id)}
+                        className="pressable"
+                        style={{
+                          flex: 1, padding: '13px 8px',
+                          borderRadius: '14px',
+                          background: status === 'visited'
+                            ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+                            : 'rgba(34,197,94,0.1)',
+                          border: `1px solid ${status === 'visited' ? 'transparent' : 'rgba(34,197,94,0.25)'}`,
+                          color: status === 'visited' ? '#fff' : '#4ade80',
+                          fontSize: '13px', fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                          transition: 'all 0.2s ease',
+                          boxShadow: status === 'visited' ? '0 4px 16px rgba(34,197,94,0.3)' : 'none',
+                        }}
+                      >
+                        <CheckCircle2 size={16} />
+                        {status === 'visited' ? 'Been Here ✓' : 'Mark Visited'}
+                      </button>
+                      <button
+                        onClick={() => status === 'wishlist' ? removeFromJourney(selectedCountry.id) : addToWishlist(selectedCountry.id)}
+                        className="pressable"
+                        style={{
+                          flex: 1, padding: '13px 8px',
+                          borderRadius: '14px',
+                          background: status === 'wishlist'
+                            ? 'linear-gradient(135deg, #ec4899, #db2777)'
+                            : 'rgba(236,72,153,0.1)',
+                          border: `1px solid ${status === 'wishlist' ? 'transparent' : 'rgba(236,72,153,0.25)'}`,
+                          color: status === 'wishlist' ? '#fff' : '#f472b6',
+                          fontSize: '13px', fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                          transition: 'all 0.2s ease',
+                          boxShadow: status === 'wishlist' ? '0 4px 16px rgba(236,72,153,0.3)' : 'none',
+                          opacity: status === 'visited' ? 0.4 : 1,
+                        }}
+                        disabled={status === 'visited'}
+                      >
+                        <Star size={16} />
+                        {status === 'wishlist' ? 'Saved ★' : 'Want to Go'}
+                      </button>
+                      {status && (
+                        <button
+                          onClick={() => removeFromJourney(selectedCountry.id)}
+                          className="pressable"
+                          style={{
+                            width: '48px', padding: '13px 0',
+                            borderRadius: '14px',
+                            background: 'rgba(239,68,68,0.1)',
+                            border: '1px solid rgba(239,68,68,0.2)',
+                            color: '#f87171', fontSize: '18px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Stats */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
                 {[
                   { label: 'Places', value: selectedCountry.places.length, color: '#14b8a6' },
                   { label: 'Experiences', value: selectedCountry.experiences.length, color: '#8b5cf6' },
@@ -715,10 +711,9 @@ export default function HomePage() {
                     flex: 1, textAlign: 'center',
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: '12px',
-                    padding: '12px 8px',
+                    borderRadius: '12px', padding: '10px 6px',
                   }}>
-                    <div style={{ fontSize: '22px', fontWeight: 800, color }}>{value}</div>
+                    <div style={{ fontSize: '20px', fontWeight: 800, color }}>{value}</div>
                     <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
                   </div>
                 ))}
@@ -730,53 +725,36 @@ export default function HomePage() {
                 className="pressable"
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  background: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
-                  padding: '18px 20px',
-                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                  padding: '16px 18px', borderRadius: '16px',
                   color: '#fff', fontWeight: 700, fontSize: '15px',
-                  marginBottom: '10px',
-                  boxShadow: '0 8px 24px rgba(20,184,166,0.25)',
+                  marginBottom: '8px',
+                  boxShadow: '0 6px 20px rgba(20,184,166,0.25)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Compass size={20} />
-                  <span>Explore Destination</span>
+                  <Compass size={18} />
+                  <span>{selectedCountry.visited ? 'Read Kiwifootsteps Guide' : 'Explore Destination'}</span>
                 </div>
-                <ChevronRight size={20} />
+                <ChevronRight size={18} />
               </Link>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <Link
-                  href={`/country/${selectedCountry.id}/chat`}
-                  className="pressable"
-                  style={{
-                    flex: 1, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', gap: '8px',
-                    background: 'rgba(139,92,246,0.15)',
-                    border: '1px solid rgba(139,92,246,0.3)',
-                    padding: '16px',
-                    borderRadius: '14px',
-                    color: '#a78bfa', fontWeight: 600, fontSize: '14px',
-                  }}
-                >
-                  <MessageCircle size={18} />
-                  <span>Chat</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Link href={`/country/${selectedCountry.id}/chat`} className="pressable" style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+                  background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)',
+                  padding: '14px', borderRadius: '13px',
+                  color: '#a78bfa', fontWeight: 600, fontSize: '13px',
+                }}>
+                  <MessageCircle size={16} />Chat
                 </Link>
-                <Link
-                  href={`/country/${selectedCountry.id}/match`}
-                  className="pressable"
-                  style={{
-                    flex: 1, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', gap: '8px',
-                    background: 'rgba(236,72,153,0.15)',
-                    border: '1px solid rgba(236,72,153,0.3)',
-                    padding: '16px',
-                    borderRadius: '14px',
-                    color: '#f472b6', fontWeight: 600, fontSize: '14px',
-                  }}
-                >
-                  <Heart size={18} />
-                  <span>Buddies</span>
+                <Link href={`/country/${selectedCountry.id}/match`} className="pressable" style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+                  background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)',
+                  padding: '14px', borderRadius: '13px',
+                  color: '#f472b6', fontWeight: 600, fontSize: '13px',
+                }}>
+                  <Heart size={16} />Buddies
                 </Link>
               </div>
             </div>
