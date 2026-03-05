@@ -9,7 +9,7 @@ import { useUserJourney } from '@/contexts/UserJourneyContext';
 import {
   X, Compass, MessageCircle, Heart, MapPin, ChevronRight,
   Sparkles, Globe2, Check, Search, Bell, TrendingUp,
-  BookOpen, PlusCircle, CheckCircle2, Star
+  BookOpen, PlusCircle, CheckCircle2, Star, Send, Lightbulb
 } from 'lucide-react';
 
 const continents = ['Europe', 'Asia', 'Africa', 'North America', 'South America', 'Oceania'] as const;
@@ -28,6 +28,24 @@ export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedCityGroup, setSelectedCityGroup] = useState<Country[] | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'curator' | 'myjourney'>('all');
+
+  // Suggest a destination
+  const [showSuggest, setShowSuggest] = useState(false);
+  const [suggestCountry, setSuggestCountry] = useState('');
+  const [suggestReason, setSuggestReason] = useState('');
+  const [suggestDone, setSuggestDone] = useState(false);
+
+  const submitSuggestion = () => {
+    if (!suggestCountry.trim()) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem('kiwi_suggestions') || '[]');
+      existing.push({ country: suggestCountry.trim(), reason: suggestReason.trim(), date: new Date().toISOString() });
+      localStorage.setItem('kiwi_suggestions', JSON.stringify(existing));
+    } catch {}
+    setSuggestDone(true);
+    setSuggestCountry('');
+    setSuggestReason('');
+  };
   const [selectedContinent, setSelectedContinent] = useState<string>('all');
   const [search, setSearch] = useState('');
 
@@ -758,6 +776,115 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── SUGGEST A DESTINATION ── */}
+      {!selectedCountry && !selectedCityGroup && (
+        <div style={{ padding: '12px 20px 100px' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(20,184,166,0.06), rgba(139,92,246,0.06))',
+            border: '1px solid rgba(20,184,166,0.15)',
+            borderRadius: '20px', padding: '18px',
+          }}>
+            {!showSuggest && !suggestDone && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '42px', height: '42px', borderRadius: '13px', flexShrink: 0,
+                  background: 'rgba(20,184,166,0.12)', border: '1px solid rgba(20,184,166,0.25)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Lightbulb size={20} color="#14b8a6" />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ color: '#e2e8f0', fontSize: '14px', fontWeight: 700, marginBottom: '2px' }}>
+                    Suggest a Destination
+                  </p>
+                  <p style={{ color: '#64748b', fontSize: '12px' }}>
+                    Where should Kiwifootsteps visit next?
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowSuggest(true)}
+                  style={{
+                    padding: '9px 16px', borderRadius: '11px', border: 'none', cursor: 'pointer',
+                    background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                    color: '#fff', fontSize: '12px', fontWeight: 700, flexShrink: 0,
+                    boxShadow: '0 4px 12px rgba(20,184,166,0.25)',
+                  }}
+                >
+                  Suggest
+                </button>
+              </div>
+            )}
+
+            {showSuggest && !suggestDone && (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                  <p style={{ color: '#e2e8f0', fontSize: '14px', fontWeight: 700 }}>Suggest a Destination</p>
+                  <button onClick={() => setShowSuggest(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Country or destination name..."
+                  value={suggestCountry}
+                  onChange={e => setSuggestCountry(e.target.value)}
+                  autoFocus
+                  style={{
+                    width: '100%', padding: '11px 14px', boxSizing: 'border-box',
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px', color: '#f8fafc', fontSize: '14px', outline: 'none',
+                    marginBottom: '10px',
+                  }}
+                />
+                <textarea
+                  placeholder="Why would you love a guide there? (optional)"
+                  value={suggestReason}
+                  onChange={e => setSuggestReason(e.target.value)}
+                  rows={2}
+                  style={{
+                    width: '100%', padding: '11px 14px', boxSizing: 'border-box',
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px', color: '#f8fafc', fontSize: '13px', outline: 'none',
+                    resize: 'none', fontFamily: 'inherit', lineHeight: 1.5, marginBottom: '12px',
+                  }}
+                />
+                <button
+                  onClick={submitSuggestion}
+                  disabled={!suggestCountry.trim()}
+                  style={{
+                    width: '100%', padding: '12px', borderRadius: '12px', border: 'none',
+                    background: suggestCountry.trim() ? 'linear-gradient(135deg, #14b8a6, #0d9488)' : 'rgba(255,255,255,0.07)',
+                    color: suggestCountry.trim() ? '#fff' : '#475569',
+                    fontSize: '14px', fontWeight: 700, cursor: suggestCountry.trim() ? 'pointer' : 'not-allowed',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+                  }}
+                >
+                  <Send size={14} /> Send Suggestion
+                </button>
+              </div>
+            )}
+
+            {suggestDone && (
+              <div style={{ textAlign: 'center', padding: '8px 0' }}>
+                <p style={{ color: '#4ade80', fontSize: '15px', fontWeight: 700, marginBottom: '4px' }}>
+                  Thanks for the suggestion!
+                </p>
+                <p style={{ color: '#64748b', fontSize: '12px', marginBottom: '12px' }}>
+                  The Kiwifootsteps team will review it.
+                </p>
+                <button
+                  onClick={() => { setSuggestDone(false); setShowSuggest(true); }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#14b8a6', fontSize: '13px', fontWeight: 600 }}
+                >
+                  Suggest another →
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
