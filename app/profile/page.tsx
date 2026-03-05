@@ -260,7 +260,7 @@ export default function ProfilePage() {
       {/* ── CURATOR GUIDE SECTION ── */}
       <div style={{ margin: '28px 20px 0' }}>
         <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
-          Your Travel Guide
+          Kiwifootsteps Guide
         </h2>
         <div style={{
           background: 'linear-gradient(135deg, rgba(20,184,166,0.08) 0%, rgba(139,92,246,0.08) 100%)',
@@ -329,7 +329,7 @@ export default function ProfilePage() {
             padding: '13px 16px', borderRadius: '14px',
             color: '#2dd4bf', fontWeight: 700, fontSize: '14px',
           }}>
-            <span>Browse {CURATOR.name.split(' ')[0]}&apos;s Guides</span>
+            <span>Browse Kiwifootsteps Guides</span>
             <ChevronRight size={18} />
           </Link>
         </div>

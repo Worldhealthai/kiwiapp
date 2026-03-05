@@ -80,7 +80,7 @@ export default function CountryDetailPage() {
             display: 'flex', alignItems: 'center', gap: '5px',
           }}>
             <Image src={CURATOR.avatar} alt={CURATOR.name} width={16} height={16} style={{ borderRadius: '5px', objectFit: 'cover' }} />
-            <span style={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}>ALEX&apos;S GUIDE</span>
+            <span style={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}>KIWI GUIDE</span>
           </div>
         )}
 
@@ -157,7 +157,7 @@ export default function CountryDetailPage() {
             <div>
               <p style={{ color: '#2dd4bf', fontSize: '12px', fontWeight: 700 }}>
                 <BookOpen size={11} style={{ display: 'inline', marginRight: '4px' }} />
-                Guide by {CURATOR.name}
+                Kiwifootsteps Guide
               </p>
               <p style={{ color: '#64748b', fontSize: '11px', marginTop: '1px' }}>
                 First-hand tips, places &amp; experiences from my visit
@@ -195,7 +195,7 @@ export default function CountryDetailPage() {
         }}>
           <Sparkles size={15} color="#ec4899" />
           <span style={{ color: '#f472b6', fontSize: '13px' }}>
-            On Alex&apos;s wishlist — planning to visit soon!
+            On the Kiwifootsteps wishlist — planning to visit soon!
           </span>
         </div>
       )}

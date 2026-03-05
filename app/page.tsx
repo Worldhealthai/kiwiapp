@@ -200,7 +200,7 @@ export default function HomePage() {
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ color: '#f8fafc', fontSize: '14px', fontWeight: 700 }}>
-                {CURATOR.name}&apos;s Travel Guide
+                Kiwifootsteps Guide
               </p>
               <p style={{ color: '#64748b', fontSize: '12px', marginTop: '2px', lineHeight: 1.5 }}>
                 {curatorVisited} countries explored · browse guides &amp; track your own journey
@@ -215,7 +215,7 @@ export default function HomePage() {
         <div style={{ marginTop: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', marginBottom: '12px' }}>
             <div>
-              <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc' }}>Alex&apos;s Footsteps</h2>
+              <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc' }}>Kiwifootsteps</h2>
               <p style={{ color: '#64748b', fontSize: '12px', marginTop: '1px' }}>Places with first-hand guides</p>
             </div>
             <span style={{ color: '#14b8a6', fontSize: '12px', fontWeight: 600 }}>{curatorVisited} guides</span>
@@ -286,7 +286,7 @@ export default function HomePage() {
         }}>
           {[
             { key: 'all',        label: '🌍 Discover' },
-            { key: 'curator',    label: '📸 Alex\'s Guides' },
+            { key: 'curator',    label: '📸 Kiwifootsteps' },
             { key: 'myjourney',  label: '✈️ My Journey' },
           ].map(({ key, label }) => (
             <button
@@ -516,7 +516,7 @@ export default function HomePage() {
               <span style={{ fontSize: '44px' }}>{selectedCityGroup[0].flagEmoji}</span>
               <div style={{ flex: 1 }}>
                 <h2 style={{ fontSize: '22px', fontWeight: 800 }}>{selectedCityGroup[0].name}</h2>
-                <p style={{ color: '#64748b', fontSize: '13px' }}>{selectedCityGroup.length} cities · Alex&apos;s guides</p>
+                <p style={{ color: '#64748b', fontSize: '13px' }}>{selectedCityGroup.length} cities · Kiwifootsteps guides</p>
               </div>
               <button onClick={() => setSelectedCityGroup(null)} className="pressable" style={{
                 width: '36px', height: '36px', borderRadius: '12px',
@@ -616,7 +616,7 @@ export default function HomePage() {
                     display: 'flex', alignItems: 'center', gap: '5px',
                   }}>
                     <Image src={CURATOR.avatar} alt={CURATOR.name} width={16} height={16} style={{ borderRadius: '5px', objectFit: 'cover' }} />
-                    <span style={{ color: '#14b8a6', fontSize: '10px', fontWeight: 700 }}>ALEX&apos;S GUIDE</span>
+                    <span style={{ color: '#14b8a6', fontSize: '10px', fontWeight: 700 }}>KIWI GUIDE</span>
                   </div>
                 )}
               </div>
@@ -734,7 +734,7 @@ export default function HomePage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <Compass size={18} />
-                  <span>{selectedCountry.visited ? 'Read Alex\'s Guide' : 'Explore Destination'}</span>
+                  <span>{selectedCountry.visited ? 'Read Kiwifootsteps Guide' : 'Explore Destination'}</span>
                 </div>
                 <ChevronRight size={18} />
               </Link>
