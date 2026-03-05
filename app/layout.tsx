@@ -1,33 +1,15 @@
 'use client';
 
 import './globals.css'
-import { useState, useEffect } from 'react'
-import BottomNav from '@/components/BottomNav'
-import SplashScreen from '@/components/SplashScreen'
+import { ReactNode } from 'react'
 import { UserJourneyProvider } from '@/contexts/UserJourneyContext'
+import AppShell from '@/components/AppShell'
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
-  const [showSplash, setShowSplash] = useState(true);
-  const [hasShownSplash, setHasShownSplash] = useState(false);
-
-  useEffect(() => {
-    const splashShown = sessionStorage.getItem('splashShown');
-    if (splashShown) {
-      setShowSplash(false);
-      setHasShownSplash(true);
-    }
-  }, []);
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-    setHasShownSplash(true);
-    sessionStorage.setItem('splashShown', 'true');
-  };
-
   return (
     <html lang="en">
       <head>
@@ -40,11 +22,9 @@ export default function RootLayout({
       </head>
       <body>
         <UserJourneyProvider>
-          {showSplash && !hasShownSplash && (
-            <SplashScreen onComplete={handleSplashComplete} />
-          )}
-          {children}
-          <BottomNav />
+          <AppShell>
+            {children}
+          </AppShell>
         </UserJourneyProvider>
       </body>
     </html>
