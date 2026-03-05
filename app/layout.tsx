@@ -14,7 +14,6 @@ export default function RootLayout({
   const [hasShownSplash, setHasShownSplash] = useState(false);
 
   useEffect(() => {
-    // Check if splash has been shown in this session
     const splashShown = sessionStorage.getItem('splashShown');
     if (splashShown) {
       setShowSplash(false);
@@ -30,7 +29,15 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body style={{ paddingBottom: '70px' }}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#030712" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <title>Kiwi Travel · Footsteps</title>
+      </head>
+      <body>
         {showSplash && !hasShownSplash && (
           <SplashScreen onComplete={handleSplashComplete} />
         )}
