@@ -1147,6 +1147,202 @@ export const countries: Country[] = [
     whatToPack: 'Comfortable walking shoes for endless bridges and cobblestones, light layers, camera for stunning canal views.'
   },
   {
+    id: 'mexico',
+    name: 'Mexico',
+    city: 'Tijuana',
+    flagEmoji: '🇲🇽',
+    coverImage: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800',
+    coordinates: { lat: 32.5149, lng: -117.0382 },
+    visited: true,
+    continent: 'North America',
+    places: [
+      {
+        name: 'Telefonica Gastro Park',
+        description: 'The ultimate destination for food enthusiasts! I spent around $15 USD on delicious local tacos, fries, and exceptional sangria - truly among the best I\'ve ever had while travelling. Don\'t waste time on fancy restaurants - local food trucks are the way to go!',
+        tips: 'Both indoor and outdoor food options. The sangria here is absolutely exceptional - don\'t leave without trying it!',
+        isBooking: false
+      },
+      {
+        name: 'Mercado Hidalgo',
+        description: 'A farmer\'s market packed with locally grown products and unique handmade crafts. Our guide had extensive knowledge and strong relationships with the sellers, enabling us to taste exceptional flavors and negotiate great prices.',
+        tips: 'Take advantage of your guide\'s relationships with the local sellers for the best experience and prices. A truly authentic immersion!',
+        isBooking: false
+      },
+      {
+        name: 'Tijuana Cultural Centre (CECUT)',
+        description: 'Located in the vibrant Zona Rio district, this cultural hub features the Museo de las Californias - taking you on a fascinating journey through Baja Peninsula history from ancient times to the modern era.',
+        tips: 'Perfect for history buffs or anyone wanting cultural enrichment beyond the food scene!',
+        isBooking: false
+      },
+      {
+        name: 'Avenida Revolución',
+        description: 'The bustling heart of downtown Tijuana! Walking tour of the city\'s culture and hidden gems including Pasaje de Las Estrellas (Tijuana\'s walk of fame replica) - fascinating to learn about and great for exploring the local lifestyle.',
+        tips: 'A great place to dispel misconceptions about Tijuana. Take your time and soak in the authentic atmosphere.',
+        isBooking: false
+      }
+    ],
+    experiences: [
+      {
+        name: 'Authentic Mexican Street Food Discovery',
+        description: 'Trying local food and beverages from street vendors and food trucks was the absolute highlight of the trip! The tacos and enchiladas were perfect. Until you\'ve tasted authentic Mexican food, you haven\'t truly experienced its incredible flavors - one of the best food experiences of my travels!',
+        isBooking: false
+      },
+      {
+        name: 'Guided Walking Tour from San Diego',
+        description: 'Having a knowledgeable local guide showed me all the sights, local markets, and hidden gems that I\'d never have found alone. The guide helped discover Tijuana\'s true character and dispel misconceptions unfairly portrayed about the city.',
+        link: 'https://www.airbnb.com/s/experiences',
+        isBooking: true
+      }
+    ],
+    topTips: [
+      'Book a guided day tour from San Diego for easy border crossing and invaluable local expertise',
+      'Try the food trucks first - they\'re far better than any fancy restaurant!',
+      'Bring cash in both USD and pesos for markets and food vendors',
+      'Keep an open mind and dispel any misconceptions - Tijuana is vibrant, welcoming, and delicious'
+    ],
+    foodRecs: [
+      'Local tacos from food trucks at Telefonica Gastro Park - absolutely perfect and unforgettable',
+      'Exceptional sangria at Telefonica Gastro Park - a must-try!',
+      'Enchiladas from local vendors and fresh spices from Mercado Hidalgo'
+    ],
+    accommodationTips: 'Most visitors do convenient day trips from San Diego - easy border crossing on foot or by car. Tijuana has hotels if you prefer an overnight stay.',
+    whatToPack: 'Cash in USD and pesos, comfortable walking shoes, camera for the colorful markets and streets, and an empty stomach for amazing food!'
+  },
+  {
+    id: 'denmark',
+    name: 'Denmark',
+    city: 'Copenhagen',
+    flagEmoji: '🇩🇰',
+    coverImage: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=800',
+    coordinates: { lat: 55.6761, lng: 12.5683 },
+    visited: true,
+    continent: 'Europe',
+    places: [
+      {
+        name: 'Nyhavn',
+        description: 'Copenhagen\'s iconic 17th-century waterfront district with colorful townhouses, historic wooden ships, and lively cafes. Absolutely picture-perfect day or night! Grab a canal-side seat, enjoy a Danish beer, and watch the boats drift by. Hans Christian Andersen himself lived here!',
+        tips: 'Touristy but absolutely essential. Visit both day and night for completely different magical atmospheres.',
+        isBooking: false
+      },
+      {
+        name: 'Tivoli Gardens',
+        description: 'One of the world\'s oldest operating amusement parks (1843), right in the heart of Copenhagen. Magical! Beautifully landscaped gardens with rides, restaurants, and live entertainment. Visit in the evening when thousands of lights create a fairy-tale atmosphere. It literally inspired Walt Disney!',
+        tips: 'Book tickets online in advance for discounts. Even more magical at Christmas time!',
+        isBooking: false
+      },
+      {
+        name: 'Rosenborg Castle',
+        description: 'A stunning Renaissance castle housing the Danish crown jewels and royal regalia, set in the beautiful King\'s Garden. The crown jewels are breathtaking and the history is incredibly rich. The surrounding park is perfect for a sunny day picnic.',
+        tips: 'Allow 1-2 hours inside. The King\'s Garden surrounding it is free to enter - a lovely spot to unwind.',
+        isBooking: false
+      },
+      {
+        name: 'Kronborg Castle (Hamlet\'s Castle)',
+        description: 'UNESCO World Heritage Site in Helsingør - the actual setting for Shakespeare\'s Hamlet. An epic castle by the sea with stunning views across to Sweden. The Renaissance architecture is magnificent and the history is captivating.',
+        tips: 'Easy 45-minute day trip from Copenhagen by train. Absolutely worth the journey!',
+        isBooking: false
+      }
+    ],
+    experiences: [
+      {
+        name: 'Cycling Like a Local',
+        description: 'Rent a bike and cycle around Copenhagen like a true Dane! The city is incredibly bike-friendly with dedicated lanes everywhere. Cycling past colorful canal houses, through parks, and along the waterways felt liberating and authentically Copenhagen.',
+        isBooking: false
+      },
+      {
+        name: 'Canal Boat Tour',
+        description: 'See Copenhagen from a completely different perspective - drifting under bridges, past the Opera House, and getting the very best views of Nyhavn and Christianshavn. A highly recommended way to experience the city\'s soul!',
+        isBooking: false
+      },
+      {
+        name: 'New Nordic Cuisine & Danish Food Culture',
+        description: 'Experience the famous Danish concept of hygge through food! Try smørrebrød (traditional open-faced sandwiches) at local lunch spots, fresh Danish pastries from artisan bakeries, and the famous pølse (hot dogs) from street vendors. Copenhagen\'s food scene is world-class!',
+        isBooking: false
+      }
+    ],
+    topTips: [
+      'Get a Copenhagen Card (24-120 hours) - includes unlimited transport and 80+ attractions for great value',
+      'Rent a bike - hands down the best way to explore like a real Dane',
+      'Climb Christiansborg Palace Tower for completely free panoramic views of the city',
+      'Visit popular attractions early morning or late afternoon to avoid cruise ship tour groups'
+    ],
+    foodRecs: [
+      'Smørrebrød - traditional Danish open-faced sandwiches with toppings like pickled herring or fresh shrimp',
+      'Danish pastries (wienerbrød) from local bakeries like Juno Bakery - truly the best in the world!',
+      'Pølse hot dogs from street vendors - surprisingly delicious!',
+      'Torvehallerne food market for an incredible range of local delicacies'
+    ],
+    accommodationTips: 'Stay in Vesterbro (hip and central) or Nørrebro (multicultural and trendy). Book well in advance for summer. Copenhagen has excellent hostels with private room options at various price points.',
+    whatToPack: 'Comfortable walking shoes, rain jacket (essential year-round), layers for changeable weather, reusable water bottle (tap water is excellent quality).'
+  },
+  {
+    id: 'cyprus',
+    name: 'Cyprus',
+    city: 'Paphos & Ayia Napa',
+    flagEmoji: '🇨🇾',
+    coverImage: 'https://static.wixstatic.com/media/948244_71ac999d9f2a4a65804ab3cd89a33798~mv2.jpg',
+    coordinates: { lat: 34.9057, lng: 33.6451 },
+    visited: true,
+    continent: 'Europe',
+    places: [
+      {
+        name: 'Paphos Archaeological Park',
+        description: 'UNESCO World Heritage Site with incredible Roman mosaics, ancient ruins, and the Tombs of the Kings. Some of the finest preserved mosaics in the entire Mediterranean - intricate, colorful, and remarkably detailed. The House of Dionysus mosaics are utterly breathtaking!',
+        tips: 'Visit early morning or late afternoon to avoid the midday heat. Allow 2-3 hours. Respect the sites - don\'t touch the mosaics!',
+        isBooking: false
+      },
+      {
+        name: 'Aphrodite\'s Rock (Petra tou Romiou)',
+        description: 'The legendary birthplace of Aphrodite, the Greek goddess of love - a stunning rock formation rising dramatically from the crystal-clear Mediterranean sea. Magical at any time of day but especially at sunset! Swimming around the rock is said to bring eternal beauty and love.',
+        tips: 'The beach is pebbly so bring reef shoes. Arrive early or late to avoid crowds. Absolutely stunning views!',
+        isBooking: false
+      },
+      {
+        name: 'Nissi Beach, Ayia Napa',
+        description: 'One of Cyprus\'s most famous beaches with crystal-clear turquoise waters and pristine white sand. Postcard-perfect! The water is incredibly warm and clear. Great for water sports and the beach bar scene is lively and fun.',
+        tips: 'Visit early morning for a peaceful experience before it gets busy in peak season.',
+        isBooking: false
+      },
+      {
+        name: 'Cape Greco National Forest Park',
+        description: 'Stunning coastal nature reserve with incredible sea caves, natural rock bridges, and hiking trails with spectacular cliff-top views. Absolutely breathtaking! The sea caves are phenomenal for photography. Don\'t miss the Blue Lagoon for swimming.',
+        tips: 'Great hiking trails with spectacular sea views. A perfect spot for watching sunrise or sunset.',
+        isBooking: false
+      }
+    ],
+    experiences: [
+      {
+        name: 'Traditional Cypriot Mezze Feast',
+        description: 'A traditional mezze feast at a local taverna - an incredible 20+ small dishes including halloumi, souvlaki, calamari, dips, fresh bread, and local wine. A culinary journey through Cypriot cuisine that lasts for hours. The hospitality is absolutely incredible!',
+        isBooking: false
+      },
+      {
+        name: 'Troodos Mountain Villages & Wine Tasting',
+        description: 'Visit charming traditional wineries in the Troodos Mountains and taste local Commandaria wine - one of the world\'s oldest named wines, dating back to 800 BC. The mountain villages are utterly charming and the wine is delicious.',
+        isBooking: false
+      },
+      {
+        name: 'Kourion Ancient Amphitheatre',
+        description: 'An ancient Greco-Roman city with a magnificent amphitheater overlooking the sea - truly unforgettable! Still used for summer performances today. The mosaics in the House of Eustolios are beautiful and well-preserved. Best visited early morning for photography.',
+        isBooking: false
+      }
+    ],
+    topTips: [
+      'Rent a car - it\'s the best way to explore the island and discover those hidden beaches',
+      'Book accommodation well in advance for July-August peak season',
+      'Try a traditional mezze - it\'s an absolute must-do culinary experience in Cyprus',
+      'Bring reef shoes for rocky and pebbly beaches - essential for comfort!'
+    ],
+    foodRecs: [
+      'Halloumi cheese - best grilled or fried, it\'s everywhere on the island and absolutely delicious!',
+      'Mezze - 20+ small dishes, the ultimate and most authentic Cypriot dining experience',
+      'Kleftiko - slow-cooked lamb that falls beautifully off the bone',
+      'Commandaria sweet dessert wine - taste one of the world\'s oldest wines'
+    ],
+    accommodationTips: 'Paphos for archaeology and a relaxed vibe. Ayia Napa for party beaches. Limassol for central location and good nightlife. Protaras for family-friendly beaches and calm waters.',
+    whatToPack: 'Reef shoes for rocky beaches, high SPF sunscreen (the sun is very strong!), multiple swimwear sets, light breathable clothing, hat and sunglasses, modest clothing for monasteries and churches.'
+  },
+  {
     id: 'japan',
     name: 'Japan',
     city: 'Tokyo',
@@ -1166,29 +1362,25 @@ export const countries: Country[] = [
         name: 'Senso-ji Temple',
         description: 'Tokyo\'s oldest and most significant Buddhist temple in Asakusa. Walk through the iconic Thunder Gate and browse traditional shops along Nakamise Shopping Street.',
         tips: 'Visit early morning to avoid crowds. The temple is beautifully illuminated at night.',
-        link: 'https://getyourguide.tp.st/tokyo-temples',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Mount Fuji Day Trip',
         description: 'Japan\'s iconic snow-capped volcano and UNESCO World Heritage site. Crystal clear views of the 3,776m peak from Lake Kawaguchi or Hakone.',
         tips: 'Best views in winter months. Day tours from Tokyo take 12 hours.',
-        link: 'https://getyourguide.tp.st/mount-fuji',
-        isBooking: true
+        isBooking: false
       }
     ],
     experiences: [
       {
         name: 'Robot Restaurant Show',
         description: 'An electrifying sensory overload of neon lights, giant robots, and energetic performances in Shinjuku. Unlike anything you\'ve experienced before!',
-        link: 'https://getyourguide.tp.st/robot-restaurant',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Tsukiji Outer Market Food Tour',
         description: 'Sample the freshest sushi, street food, and Japanese delicacies at Tokyo\'s famous fish market. A must for food lovers!',
-        link: 'https://getyourguide.tp.st/tsukiji-food-tour',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Traditional Tea Ceremony',
@@ -1225,15 +1417,13 @@ export const countries: Country[] = [
         name: 'Grand Palace',
         description: 'Bangkok\'s most famous landmark and former royal residence. Stunning Thai architecture, intricate details, and the sacred Emerald Buddha Temple.',
         tips: 'Dress modestly - shoulders and knees must be covered. Arrive when it opens at 8:30am to beat crowds.',
-        link: 'https://getyourguide.tp.st/grand-palace',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Phi Phi Islands',
         description: 'Paradise islands with crystal-clear turquoise waters, white sand beaches, and dramatic limestone cliffs. Made famous by "The Beach" movie.',
         tips: 'Day trips from Phuket or Krabi. Maya Bay can get crowded - go early or late.',
-        link: 'https://getyourguide.tp.st/phi-phi',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Floating Markets',
@@ -1246,8 +1436,7 @@ export const countries: Country[] = [
       {
         name: 'Thai Cooking Class',
         description: 'Learn to cook authentic Thai dishes like Pad Thai, Green Curry, and Tom Yum. Visit local markets for fresh ingredients, then cook and eat your creations!',
-        link: 'https://getyourguide.tp.st/cooking-class-bangkok',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Traditional Thai Massage',
@@ -1257,8 +1446,7 @@ export const countries: Country[] = [
       {
         name: 'Muay Thai Boxing Match',
         description: 'Watch Thailand\'s national sport at Rajadamnern or Lumpinee Stadium. Electrifying atmosphere with traditional music and ceremonies.',
-        link: 'https://getyourguide.tp.st/muay-thai',
-        isBooking: true
+        isBooking: false
       }
     ],
     topTips: [
@@ -1279,134 +1467,136 @@ export const countries: Country[] = [
   {
     id: 'new-zealand',
     name: 'New Zealand',
-    city: 'Auckland',
+    city: 'Auckland & Queenstown',
     flagEmoji: '🇳🇿',
     coverImage: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=800',
     coordinates: { lat: -41.2865, lng: 174.7762 },
-    visited: false,
+    visited: true,
     continent: 'Oceania',
     places: [
       {
         name: 'Milford Sound',
-        description: 'Rudyard Kipling called it the "Eighth Wonder of the World." Breathtaking fjord with towering waterfalls, rainforests, and dramatic peaks reaching 1,200m straight from the sea.',
-        tips: 'Book cruises months in advance. Rains 200+ days/year but that makes waterfalls spectacular!',
-        link: 'https://getyourguide.tp.st/milford-sound',
-        isBooking: true
+        description: 'One of New Zealand\'s most breath-taking natural wonders - a stunning fjord surrounded by towering waterfalls, rainforests, and dramatic peaks. Worth every minute of the 4-hour drive from Queenstown! An extraordinary experience.',
+        tips: 'Rent a car to stop wherever you want, or book a guided tour with local commentary, bus comfort, hotel pickup, and a 2-hour cruise with lunch.',
+        isBooking: false
       },
       {
-        name: 'Queenstown Adventure Sports',
-        description: 'The adventure capital of the world! Birthplace of bungy jumping. Try bungy, skydiving, jet boating, paragliding, or canyon swinging.',
-        tips: 'The Nevis Bungy (134m) is NZ\'s highest. Book combos for discounts.',
-        link: 'https://getyourguide.tp.st/queenstown-adventure',
-        isBooking: true
+        name: 'Kawarau Bridge Bungy Jump',
+        description: 'Take the plunge at the birthplace of bungy jumping! 40m drop into the crystal clear Kawarau River - heart racing, mind buzzing. Tandem option available for those wanting moral support. Can\'t describe the rush!',
+        tips: '$265 NZD per person, tandem option available. You just have to do it!',
+        isBooking: false
       },
       {
-        name: 'Hobbiton Movie Set',
-        description: 'Step into Middle-earth at the actual Lord of the Rings filming location. 44 hobbit holes, the Green Dragon Inn, and stunning Shire landscapes.',
-        tips: 'Evening tours include a feast at the Green Dragon. Tours sell out weeks ahead.',
-        link: 'https://getyourguide.tp.st/hobbiton',
-        isBooking: true
+        name: 'Cape Reinga Lighthouse',
+        description: 'The northernmost accessible point of New Zealand and a sacred Māori site where departed souls begin their journey to the afterlife. The Tasman Sea meets the Pacific Ocean creating a dramatic whirlpool - the "Meeting of the Waters." Absolutely breathtaking.',
+        tips: 'Best visited as part of a day tour that includes Ninety Mile Beach and Te Paki Sand Dunes for sandboarding.',
+        isBooking: false
+      },
+      {
+        name: 'Bob\'s Peak Gondola, Queenstown',
+        description: 'Just 5 minutes ride to stunning panoramic views of Lake Wakatipu, The Remarkables mountain range, and Queenstown below. A profound silence at the top with views you\'ll carry forever.',
+        tips: 'Tickets from $52 NZD via Skyline. Make this a priority if you have limited time in Queenstown!',
+        isBooking: false
       }
     ],
     experiences: [
       {
-        name: 'Haka Cultural Performance',
-        description: 'Experience traditional Māori culture through the powerful haka dance, songs, and hangi feast. Learn about New Zealand\'s indigenous heritage.',
-        link: 'https://getyourguide.tp.st/maori-haka',
-        isBooking: true
-      },
-      {
-        name: 'Tongariro Alpine Crossing',
-        description: 'New Zealand\'s best one-day hike through volcanic landscapes, emerald lakes, and alpine meadows. 19.4km trek takes 6-8 hours.',
+        name: 'Jet Boating in Waitemata Harbour',
+        description: 'Thrilling 40-minute adventure with on-water tricks, iconic Auckland landmarks, and speeds up to 100kph. A standout Auckland experience that will leave you grinning from ear to ear!',
         isBooking: false
       },
       {
-        name: 'Glow Worm Caves',
-        description: 'Float through underground caves lit by thousands of glowing worms. Magical experience in Waitomo.',
-        link: 'https://getyourguide.tp.st/waitomo-caves',
-        isBooking: true
+        name: 'Fergburger in Queenstown',
+        description: 'Crowned ultimate traveller\'s choice 2020 and a Queenstown institution - worth every minute of the queue! Burgers NZ$15-25. Follow up with Cookie Time for dessert or Minus 5° Ice Bar for cocktails year-round.',
+        isBooking: false
+      },
+      {
+        name: 'Traditional Hangi Feast',
+        description: 'A traditional Māori feast cooked in an underground oven at Waitangi Treaty Grounds. Includes cultural performances showcasing this unique heritage. From NZ$120. Available November-March.',
+        isBooking: false
       }
     ],
     topTips: [
-      'Rent a car or campervan to explore - public transport is limited',
-      'Book activities in advance, especially in Queenstown',
-      'Weather changes rapidly - pack layers',
-      'Distances are deceiving - allow more driving time than expected'
+      'Car rental is essential for exploring beyond cities - public transport is very limited',
+      'Pack layers - Auckland can genuinely have 4 seasons in one day!',
+      'Book activities in Queenstown well in advance - it gets very busy in summer',
+      'Try a paua pie in the Far North for a truly unique New Zealand food experience'
     ],
     foodRecs: [
-      'Fergburger in Queenstown - legendary burgers (NZ$15-20)',
-      'Fresh green-lipped mussels',
-      'Pavlova dessert with kiwi fruit',
-      'Flat white coffee - NZ perfected it'
+      'Mince and Cheese Pie from local dairies (corner shops) - an iconic Kiwi staple!',
+      'Fish and chips on the beach - a beloved New Zealand tradition',
+      'Hokey Pokey ice cream and Goody Goody Gum Drops',
+      'Fergburger in Queenstown - legendary and absolutely worth the queue'
     ],
-    accommodationTips: 'Hostels and holiday parks widespread. Queenstown and Auckland pricier. Freedom camping allowed in designated areas with self-contained vehicles.',
-    whatToPack: 'Hiking boots, waterproof jacket, layers for all seasons, sandfly repellent, sunscreen (strong UV).'
+    accommodationTips: 'Auckland city center or near beaches for great access. Queenstown - book well ahead especially in summer! Small guesthouses in Coromandel for a relaxed beachside experience.',
+    whatToPack: 'Layers for rapidly changing weather, rain jacket, comfortable walking shoes, old shoes for waterfall hikes, swimwear, strong sunscreen.'
   },
   {
     id: 'australia',
     name: 'Australia',
-    city: 'Sydney',
+    city: 'Sydney, Melbourne & Gold Coast',
     flagEmoji: '🇦🇺',
     coverImage: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800',
     coordinates: { lat: -33.8688, lng: 151.2093 },
-    visited: false,
+    visited: true,
     continent: 'Oceania',
     places: [
       {
         name: 'Sydney Opera House',
-        description: 'Iconic architectural masterpiece and UNESCO World Heritage site. Those white shell-shaped sails are even more impressive in person!',
-        tips: 'Take a guided tour to go inside. Photograph from Mrs Macquarie\'s Chair for best angles.',
-        link: 'https://getyourguide.tp.st/sydney-opera',
-        isBooking: true
+        description: 'UNESCO World Heritage site with over 1 million roof tiles - absolutely stunning! Take a guided tour to discover its rich history or watch a performance. Enjoy a meal at Opera Bar right by the water with incredible harbour views.',
+        tips: 'Book tours in advance. Photograph from Mrs Macquarie\'s Chair for the best angles. Opera Bar is perfect for post-tour drinks!',
+        isBooking: false
       },
       {
-        name: 'Great Barrier Reef',
-        description: 'The world\'s largest coral reef system - visible from space! 2,900km of vibrant coral, tropical fish, sea turtles, and reef sharks.',
-        tips: 'Cairns and Port Douglas are main gateways. Best visibility Oct-Dec. Snorkeling and diving available.',
-        link: 'https://getyourguide.tp.st/great-barrier-reef',
-        isBooking: true
+        name: 'Sydney Harbour Bridge',
+        description: '1,332 steps to the summit - one of the most popular climbing destinations in the world! The climb takes 2.5-3.5 hours with breathtaking panoramic views. Alternatively, walk across for free with informative plaques about this engineering marvel.',
+        tips: 'Climb from $294 AUD. The New Year\'s Eve fireworks display is spectacular! Walking across is free.',
+        isBooking: false
       },
       {
-        name: 'Uluru (Ayers Rock)',
-        description: 'Sacred Aboriginal site and Australia\'s spiritual heart. Massive 348m sandstone monolith that glows red at sunset in the Outback.',
-        tips: 'Climbing is disrespectful and now banned. Watch sunrise and sunset - colors are incredible.',
-        link: 'https://getyourguide.tp.st/uluru-tour',
-        isBooking: true
+        name: 'Bondi Beach',
+        description: 'Iconic Australian beach culture! The coastal walk from Bondi to Coogee offers stunning views and numerous beautiful beaches. Try a surfing lesson with skilled local instructors.',
+        tips: 'Don\'t forget sunscreen - Australian sun is seriously strong! The coastal walk is an easy and rewarding way to explore multiple beaches.',
+        isBooking: false
+      },
+      {
+        name: 'Gold Coast Theme Parks',
+        description: 'Movie World features Hollywood superheroes and thrilling rides! White Water World next to Dreamworld offers exciting waterslides. A place packed with pure childhood memories - perfect for all ages!',
+        tips: '3-day pass gives access to multiple parks. Buy multi-day passes for the best value.',
+        isBooking: false
       }
     ],
     experiences: [
       {
-        name: 'Sydney Harbour Bridge Climb',
-        description: 'Climb the iconic "Coathanger" for 360° views 134m above the harbor. 3.5-hour experience you\'ll never forget!',
-        link: 'https://getyourguide.tp.st/bridge-climb',
-        isBooking: true
-      },
-      {
-        name: 'Great Ocean Road Drive',
-        description: 'One of the world\'s most scenic coastal drives. See the Twelve Apostles limestone stacks, rainforests, and beaches along 243km.',
+        name: 'Melbourne City Culture & Laneways',
+        description: 'Melbourne is one of those cities I would consider as my lifelong home. The vibrant street art, lively markets, world-class café culture, and hidden laneways make it completely unforgettable. The waterfront Docklands precinct has 180+ stores and 36 outdoor artworks!',
         isBooking: false
       },
       {
-        name: 'Kangaroo Island Wildlife',
-        description: 'Get up close with kangaroos, koalas, sea lions, and penguins in their natural habitat. Australia\'s "zoo without fences."',
-        link: 'https://getyourguide.tp.st/kangaroo-island',
-        isBooking: true
+        name: 'Phillip Island Penguin Parade',
+        description: 'Watch little penguins waddle ashore at sunset in their natural habitat - an unforgettable wildlife experience! 90 minutes from Melbourne. Guided tours (8-9 hours) include transportation, tickets, and expert commentary.',
+        isBooking: false
+      },
+      {
+        name: 'Gold Coast Parasailing & Beaches',
+        description: 'Three legendary surf beaches: Snappers Rock, Kirra Beach, and Burleigh Heads. Or take it up a notch with parasailing - soar 350 feet above the water with 360° views. Flight is 7-8 minutes, from $93 AUD. Epic memories!',
+        isBooking: false
       }
     ],
     topTips: [
-      'Australia is HUGE - don\'t underestimate distances between cities',
-      'Slip, slop, slap - sunscreen is essential (strong UV)',
-      'Check for deadly creatures before putting on shoes',
-      'Tipping not expected - minimum wage is high'
+      'Book Sydney Opera House tours and Harbour Bridge climb well in advance',
+      'Don\'t forget lots of SPF 50+ sunscreen and water - Australian sun is incredibly strong!',
+      'Get public transport cards (Opal Card for Sydney, Myki for Melbourne) to save money',
+      'Gold Coast theme parks - buy multi-day passes for the best value'
     ],
     foodRecs: [
-      'Fresh fish and chips at Bondi Beach',
-      'Barramundi - iconic Australian fish',
-      'Tim Tams - chocolate biscuit cookies',
-      'Flat white or long black coffee - coffee culture is strong'
+      'Flat white coffee - Australians perfected it!',
+      'Prawns on the barbie and classic Aussie BBQ',
+      'Tim Tams (chocolate biscuits) and Lamingtons',
+      'Fresh seafood and Barramundi fish'
     ],
-    accommodationTips: 'Sydney and Melbourne are expensive. Hostels common for backpackers. Airbnb good value. Consider house sitting for longer stays.',
-    whatToPack: 'Strong sunscreen, hat, swimmers, hiking shoes, camera, reef-safe sunscreen for Great Barrier Reef.'
+    accommodationTips: 'Sydney: Circular Quay and Darling Harbour for iconic central stays. Melbourne: CBD or St Kilda. Gold Coast: Surfers Paradise or Burleigh Heads. Book early for summer!',
+    whatToPack: 'Lots of SPF 50+ sunscreen, hat and sunglasses, swimwear, light breathable clothing, light jacket for Melbourne\'s famously changeable weather.'
   },
   {
     id: 'iceland',
@@ -1422,42 +1612,36 @@ export const countries: Country[] = [
         name: 'Blue Lagoon',
         description: 'Geothermal spa with milky-blue waters rich in silica and minerals. Bathe in 37-39°C water surrounded by volcanic landscapes.',
         tips: 'Book weeks in advance - sells out daily. Splurge on premium package for private changing room.',
-        link: 'https://getyourguide.tp.st/blue-lagoon',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Golden Circle',
         description: 'Iceland\'s most popular route covering Þingvellir National Park, Geysir geothermal area, and Gullfoss waterfall. 300km of stunning sights.',
         tips: 'Self-drive or join a tour. Can be done in 6-7 hours but better with full day.',
-        link: 'https://getyourguide.tp.st/golden-circle',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Jökulsárlón Glacier Lagoon',
         description: 'Otherworldly lagoon filled with icebergs calving from Breiðamerkurjökull glacier. Seals swim among floating ice. Adjacent black sand Diamond Beach.',
         tips: 'Visit at sunrise or sunset for best light. Boat tours available May-Oct.',
-        link: 'https://getyourguide.tp.st/glacier-lagoon',
-        isBooking: true
+        isBooking: false
       }
     ],
     experiences: [
       {
         name: 'Northern Lights Hunt',
         description: 'Chase the magical Aurora Borealis dancing across Arctic skies. Best from September to April during solar activity.',
-        link: 'https://getyourguide.tp.st/northern-lights-iceland',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Ice Cave Exploration',
         description: 'Venture inside natural blue ice caves formed in glaciers. Stunning translucent blue ice formations. Only accessible in winter.',
-        link: 'https://getyourguide.tp.st/ice-cave',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Whale Watching',
         description: 'Spot humpback whales, orcas, dolphins, and puffins in Icelandic waters. Húsavík is the whale watching capital.',
-        link: 'https://getyourguide.tp.st/whale-watching-iceland',
-        isBooking: true
+        isBooking: false
       }
     ],
     topTips: [
@@ -1489,36 +1673,31 @@ export const countries: Country[] = [
         name: 'Machu Picchu',
         description: 'The legendary "Lost City of the Incas" perched 2,430m in the Andes. One of the New Seven Wonders of the World. Clouds part to reveal the ancient citadel.',
         tips: 'Book permits months in advance - only 2,500 daily visitors allowed. Hike up or take train from Cusco.',
-        link: 'https://getyourguide.tp.st/machu-picchu',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Rainbow Mountain',
         description: 'Vinicunca\'s mineral-streaked slopes create natural rainbow colors. Strenuous 5,200m altitude hike but the views are surreal.',
         tips: 'Start at 4am to see sunrise and beat crowds. Take altitude sickness pills.',
-        link: 'https://getyourguide.tp.st/rainbow-mountain',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Amazon Rainforest',
         description: 'Explore the Peruvian Amazon from Puerto Maldonado or Iquitos. Spot monkeys, macaws, pink river dolphins, and caimans.',
         tips: 'Multi-day lodge stays offer best wildlife encounters. Bring serious bug spray!',
-        link: 'https://getyourguide.tp.st/amazon-peru',
-        isBooking: true
+        isBooking: false
       }
     ],
     experiences: [
       {
         name: 'Inca Trail Trek',
         description: 'Four-day trek through cloud forests, Inca ruins, and mountain passes to reach Machu Picchu at sunrise. 43km of ancient pathways.',
-        link: 'https://getyourguide.tp.st/inca-trail',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Lima Food Tour',
         description: 'Peru\'s capital is South America\'s culinary capital. Sample ceviche, anticuchos, and pisco sours in world-class restaurants.',
-        link: 'https://getyourguide.tp.st/lima-food-tour',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Lake Titicaca Floating Islands',
@@ -1561,8 +1740,7 @@ export const countries: Country[] = [
         name: 'Sahara Desert',
         description: 'Sleep under a billion stars in the world\'s largest hot desert. Camel trek over golden dunes, watch surreal sunsets, and experience Berber hospitality.',
         tips: 'Merzouga is the gateway. Book overnight desert camps. Go in spring or autumn to avoid extreme heat.',
-        link: 'https://getyourguide.tp.st/sahara-desert',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Chefchaouen Blue City',
@@ -1575,20 +1753,17 @@ export const countries: Country[] = [
       {
         name: 'Traditional Hammam Spa',
         description: 'Experience centuries-old Moroccan bathing ritual. Steam room, black soap scrub, and eucalyptus wash leave you completely rejuvenated.',
-        link: 'https://getyourguide.tp.st/hammam-marrakech',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Moroccan Cooking Class',
         description: 'Learn to make authentic tagine, couscous, and mint tea. Shop at local souks for spices and ingredients.',
-        link: 'https://getyourguide.tp.st/cooking-class-morocco',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Atlas Mountains Trek',
         description: 'Day hike or multi-day trek through Berber villages, waterfalls, and valleys. Mount Toubkal (4,167m) is North Africa\'s highest peak.',
-        link: 'https://getyourguide.tp.st/atlas-mountains',
-        isBooking: true
+        isBooking: false
       }
     ],
     topTips: [
@@ -1620,30 +1795,26 @@ export const countries: Country[] = [
         name: 'Acropolis & Parthenon',
         description: 'Ancient citadel overlooking Athens. The 2,500-year-old Parthenon temple dedicated to Athena is even more awe-inspiring in person.',
         tips: 'Buy combo ticket for 7 archaeological sites (€30). Arrive at 8am opening or late afternoon.',
-        link: 'https://getyourguide.tp.st/acropolis-tour',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Santorini',
         description: 'The postcard-perfect island with white-washed buildings, blue-domed churches, and stunning caldera views. Sunsets in Oia are legendary.',
         tips: 'Visit May-June or Sept-Oct for fewer crowds. Fira and Oia get packed in summer.',
-        link: 'https://getyourguide.tp.st/santorini-tour',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Meteora Monasteries',
         description: 'Medieval monasteries built atop towering rock pillars. Six monasteries still functioning, perched 400m above the plain. Surreal landscape.',
         tips: 'Visit at least 2 monasteries. Kalambaka town is the base. Dress modestly - no shorts or bare shoulders.',
-        link: 'https://getyourguide.tp.st/meteora-tour',
-        isBooking: true
+        isBooking: false
       }
     ],
     experiences: [
       {
         name: 'Island Hopping',
         description: 'Ferry between Greek islands - Mykonos for nightlife, Naxos for beaches, Crete for history. Each island has unique character.',
-        link: 'https://getyourguide.tp.st/greek-islands',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Traditional Greek Taverna',
@@ -1653,8 +1824,7 @@ export const countries: Country[] = [
       {
         name: 'Delphi Archaeological Site',
         description: 'Ancient sanctuary of Apollo and home of the famous Oracle. Spectacular mountain setting with ruins of temples, treasury, and ancient theatre.',
-        link: 'https://getyourguide.tp.st/delphi-tour',
-        isBooking: true
+        isBooking: false
       }
     ],
     topTips: [
@@ -1686,30 +1856,26 @@ export const countries: Country[] = [
         name: 'Iguazu Falls',
         description: 'One of the world\'s most spectacular waterfalls. 275 individual cascades thunder over 3km. The "Devil\'s Throat" is absolutely mind-blowing.',
         tips: 'Visit both Argentine and Brazilian sides for different perspectives. Bring waterproof bag for walkways.',
-        link: 'https://getyourguide.tp.st/iguazu-falls',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Perito Moreno Glacier',
         description: 'Massive glacier with 60m ice walls in Patagonia. Hear thunderous cracks as huge chunks calve into Lake Argentino. One of few advancing glaciers.',
         tips: 'Visit from El Calafate. Ice-trekking tours walk ON the glacier with crampons.',
-        link: 'https://getyourguide.tp.st/perito-moreno',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Mendoza Wine Region',
         description: 'World-class Malbec region in the Andes foothills. Tour vineyards, taste exceptional wines, and enjoy gourmet food with mountain views.',
         tips: 'Bike between wineries in Maipú. Book vineyard tours and tastings in advance.',
-        link: 'https://getyourguide.tp.st/mendoza-wine',
-        isBooking: true
+        isBooking: false
       }
     ],
     experiences: [
       {
         name: 'Buenos Aires Tango Show',
         description: 'Watch passionate tango dancers in the birthplace of tango. Dinner shows in San Telmo combine steak, wine, and mesmerizing performances.',
-        link: 'https://getyourguide.tp.st/tango-show',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Patagonia Trekking',
@@ -1751,15 +1917,13 @@ export const countries: Country[] = [
         name: 'Banff National Park',
         description: 'Canada\'s most iconic national park in the Canadian Rockies. Turquoise lakes (Lake Louise, Moraine Lake), glaciers, and wildlife. Jaw-dropping scenery.',
         tips: 'Visit June-Sept for hiking. Lake Louise gets packed - arrive before 7am or after 5pm.',
-        link: 'https://getyourguide.tp.st/banff-tour',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Niagara Falls',
         description: 'Thundering waterfalls on the US-Canada border. 750,000 gallons per second plunge over the edge. Canadian side has the best views.',
         tips: 'Take the Hornblower boat tour right to the falls. Visit Table Rock for closest views.',
-        link: 'https://getyourguide.tp.st/niagara-falls',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Vancouver Island',
@@ -1772,8 +1936,7 @@ export const countries: Country[] = [
       {
         name: 'Northern Lights in Yukon',
         description: 'Whitehorse and Yellowknife offer prime Aurora viewing from September to April. Clear skies and minimal light pollution.',
-        link: 'https://getyourguide.tp.st/yukon-aurora',
-        isBooking: true
+        isBooking: false
       },
       {
         name: 'Ice Skating on Lake Louise',
@@ -1808,64 +1971,64 @@ export const countries: Country[] = [
     flagEmoji: '🇪🇬',
     coverImage: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800',
     coordinates: { lat: 30.0444, lng: 31.2357 },
-    visited: false,
+    visited: true,
     continent: 'Africa',
     places: [
       {
-        name: 'Pyramids of Giza',
-        description: 'The last remaining Wonder of the Ancient World. The Great Pyramid stood as the world\'s tallest structure for 3,800 years. The Sphinx guards nearby.',
-        tips: 'Go early (7am) to avoid crowds and heat. Camel rides are negotiable. Watch sunset from viewpoint.',
-        link: 'https://getyourguide.tp.st/pyramids-giza',
-        isBooking: true
+        name: 'The Great Pyramids & Sphinx of Giza',
+        description: 'Standing before the Great Pyramid was a surreal, once-in-a-lifetime experience - a lifelong dream turned reality. I chose to stay outside to fully appreciate the majesty rather than wait in line. Having a knowledgeable guide share the fascinating history made it truly unforgettable. The Sphinx stands watch nearby.',
+        tips: 'Don\'t miss the chance for a camel ride around the complex! Going early avoids the worst of the heat and crowds.',
+        isBooking: false
+      },
+      {
+        name: 'Nile River Dinner Cruise',
+        description: 'An unforgettable 3-hour evening cruise along the legendary Nile with dinner buffet, mesmerizing belly dancers and folkloric performances, and breathtaking views of Cairo\'s glittering skyline from the top deck. A vibrant celebration of Egyptian culture!',
+        tips: 'Starting from just £20, it\'s incredible value! Hotel pickup from Downtown Cairo is included. Perfect for making new friends.',
+        isBooking: false
       },
       {
         name: 'Valley of the Kings',
-        description: 'Ancient burial ground of pharaohs near Luxor. Tutankhamun\'s tomb and intricate hieroglyphics preserved for 3,000+ years in rock-cut tombs.',
-        tips: 'Ticket includes 3 tombs. Photography banned inside. Visit early before tour groups.',
-        link: 'https://getyourguide.tp.st/valley-of-kings',
-        isBooking: true
+        description: 'Ancient burial site near Luxor home to over 60 tombs of Pharaohs including Tutankhamun, Ramses II, and Seti I. Each tomb is filled with intricate art - an awe-inspiring must-see that attracts visitors from all over the world.',
+        tips: 'Wear comfortable walking shoes and take a guided tour to get the most out of this experience. Visit early before the tour groups arrive.',
+        isBooking: false
       },
       {
-        name: 'Red Sea Diving',
-        description: 'Some of the world\'s best diving and snorkeling. Crystal-clear waters, vibrant coral reefs, and abundant marine life in Sharm el-Sheikh or Hurghada.',
-        tips: 'Water temperature perfect year-round. Liveaboard diving trips offer best sites.',
-        link: 'https://getyourguide.tp.st/red-sea-diving',
-        isBooking: true
+        name: 'Abu Simbel',
+        description: 'Massive temples built by Pharaoh Ramses II featuring four giant statues at the entrance. The entire site was relocated in the 1960s to save it from the Aswan Dam. Twice a year, the sun perfectly aligns to shine directly on the inner statues - ancient engineering brilliance.',
+        tips: 'Arrive early and bring plenty of water and snacks - it\'s very hot! Take time to admire the incredible statues up close.',
+        isBooking: false
       }
     ],
     experiences: [
       {
-        name: 'Nile River Cruise',
-        description: 'Multi-day cruise between Luxor and Aswan. Visit temples of Karnak, Edfu, and Kom Ombo while sailing past villages and desert landscapes.',
-        link: 'https://getyourguide.tp.st/nile-cruise',
-        isBooking: true
+        name: 'Sleeping on a Felucca Sailboat',
+        description: 'Two nights aboard a traditional wooden Felucca boat drifting along the Nile River. Sleeping on mats under a blanket of stars with the gentle rocking of the boat was simple, serene, and utterly unforgettable. Shared with other passengers - a beautiful way to connect with nature and fellow travellers.',
+        isBooking: false
       },
       {
-        name: 'Egyptian Museum',
-        description: 'Home to Tutankhamun\'s golden mask and 120,000+ ancient artifacts. Overwhelming collection of mummies, sarcophagi, and treasures.',
-        link: 'https://getyourguide.tp.st/egyptian-museum',
-        isBooking: true
+        name: 'Guided Egypt Tour',
+        description: 'Joining a guided tour was the perfect way to deepen understanding of Egypt\'s incredible 5,000-year history while connecting with like-minded travellers. The shared stories, laughter, and new friendships made the trip far richer than I imagined. Highly recommended for solo travellers!',
+        isBooking: false
       },
       {
-        name: 'Bedouin Desert Experience',
-        description: 'Camel trek into the Sahara, watch sunset over dunes, enjoy traditional Bedouin feast, and sleep under desert stars.',
+        name: 'Overnight Train Cairo to Aswan',
+        description: 'An adventure in itself! While not the most luxurious option, the overnight train from Cairo to Aswan is a practical, budget-friendly choice offering an authentic glimpse into Egyptian local travel culture. With the right mindset, it becomes a fun and memorable part of the experience.',
         isBooking: false
       }
     ],
     topTips: [
-      'Haggle for everything except in modern shops',
-      'Dress conservatively - cover shoulders and knees',
-      'Only drink bottled water - ice cubes can cause issues',
-      'Carry small bills (Egyptian pounds) for tips'
+      'Book a guided tour - it deepens your understanding and is perfect for solo travellers looking for community',
+      'Arrive early at popular sites like Abu Simbel to beat both the heat and the crowds',
+      'Consider the overnight train for an authentic, budget-friendly journey between Cairo and Aswan',
+      'Book everything through one tour company to make the trip seamlessly hassle-free'
     ],
     foodRecs: [
-      'Koshari - Egypt\'s national dish (rice, lentils, pasta, tomato sauce)',
-      'Ful medames - fava bean stew for breakfast',
-      'Fresh mango juice',
-      'Molokhia - green soup with garlic and coriander'
+      'Try authentic Egyptian cuisine on the Nile dinner cruise buffet - incredible variety',
+      'Sample local flavors in Cairo\'s vibrant food scene',
+      'Bring snacks and plenty of water for day trips to hot sites like Abu Simbel'
     ],
-    accommodationTips: 'Cairo ranges from budget hostels to luxury hotels. Nile cruises include accommodation. Red Sea resorts in Sharm/Hurghada for beach stays.',
-    whatToPack: 'Modest clothing, comfortable walking shoes, sunscreen, hat, scarf for dust, hand sanitizer, toilet paper.'
+    accommodationTips: 'Mix of Cairo hotels and unique experiences like sleeping on the Felucca boat under the stars. Booking through a tour company includes accommodations and makes planning effortless.',
+    whatToPack: 'Comfortable walking shoes, light breathable clothing, sun protection (hat, sunglasses, high SPF), plenty of water, modest clothing for religious sites, camera for once-in-a-lifetime shots.'
   }
 ];
 

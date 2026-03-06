@@ -1,37 +1,175 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { countries } from '@/lib/countries';
 import { CURATOR } from '@/lib/curator';
-import { useUserJourney } from '@/contexts/UserJourneyContext';
+import { useUserJourney, UserProfile } from '@/contexts/UserJourneyContext';
 import {
-  Camera, Globe2, Settings, LogOut, Edit2,
+  Globe2, Settings, Edit2, LogOut,
   CheckCircle, Sparkles, Heart, ChevronRight, TrendingUp,
-  BookOpen, Star, MapPin, ArrowRight
+  BookOpen, Star, ArrowRight, X, Check,
 } from 'lucide-react';
 
-// User's own info (editable later)
-const myInfo = {
-  name: 'Your Name',
-  handle: '@your.travels',
-  bio: 'Tap Edit Profile to set up your travel identity ✈️',
-  memberSince: 'March 2026',
-  travelStyle: ['Explorer', 'Culture', 'Food'],
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
-  coverImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200',
-};
+const TRAVEL_STYLES = [
+  'Adventure', 'Culture', 'Food', 'Photography', 'Nature', 'Beach',
+  'Hiking', 'History', 'Backpacker', 'Luxury', 'Road Trip', 'Solo',
+  'Nightlife', 'Wellness', 'Wildlife', 'Architecture',
+];
+
+function InitialsAvatar({ name, size = 96 }: { name: string; size?: number }) {
+  const initials = name.trim().split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const radius = Math.round(size * 0.29);
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: `${radius}px`,
+      background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      border: '3px solid var(--bg-primary)',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+      flexShrink: 0,
+    }}>
+      <span style={{ color: '#fff', fontWeight: 800, fontSize: size * 0.34 }}>{initials || '?'}</span>
+    </div>
+  );
+}
+
+function EditProfileModal({ profile, onSave, onClose }: {
+  profile: UserProfile;
+  onSave: (p: UserProfile) => void;
+  onClose: () => void;
+}) {
+  const [name, setName] = useState(profile.name);
+  const [handle, setHandle] = useState(profile.handle);
+  const [bio, setBio] = useState(profile.bio);
+  const [styles, setStyles] = useState<string[]>(profile.travelStyle);
+
+  const toggleStyle = (s: string) =>
+    setStyles(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
+
+  const canSave = name.trim().length >= 2;
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 1000,
+      background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+    }} onClick={onClose}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          width: '100%', maxWidth: '480px',
+          background: '#0f172a',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '24px 24px 0 0',
+          padding: '20px 20px 40px',
+          maxHeight: '90dvh', overflowY: 'auto',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <h2 style={{ color: '#f8fafc', fontSize: '18px', fontWeight: 800 }}>Edit Profile</h2>
+          <button onClick={onClose} style={{
+            background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '10px', width: '36px', height: '36px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+          }}>
+            <X size={18} color="#94a3b8" />
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div>
+            <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Name *</label>
+            <input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              style={{
+                width: '100%', padding: '12px 14px', boxSizing: 'border-box',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px', color: '#f8fafc', fontSize: '15px', outline: 'none',
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Username</label>
+            <input
+              value={handle}
+              onChange={e => setHandle(e.target.value)}
+              style={{
+                width: '100%', padding: '12px 14px', boxSizing: 'border-box',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px', color: '#14b8a6', fontSize: '15px', outline: 'none',
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>Bio</label>
+            <textarea
+              value={bio}
+              onChange={e => setBio(e.target.value)}
+              rows={3}
+              style={{
+                width: '100%', padding: '12px 14px', boxSizing: 'border-box',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px', color: '#f8fafc', fontSize: '14px', outline: 'none',
+                resize: 'none', fontFamily: 'inherit', lineHeight: 1.6,
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '9px' }}>Travel Style</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+              {TRAVEL_STYLES.map(style => {
+                const active = styles.includes(style);
+                return (
+                  <button key={style} onClick={() => toggleStyle(style)} style={{
+                    padding: '6px 12px', borderRadius: '100px',
+                    background: active ? 'rgba(20,184,166,0.15)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${active ? 'rgba(20,184,166,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                    color: active ? '#14b8a6' : '#64748b',
+                    fontSize: '12px', fontWeight: active ? 600 : 400, cursor: 'pointer',
+                  }}>
+                    {style}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            if (!canSave) return;
+            onSave({ ...profile, name: name.trim(), handle, bio: bio.trim(), travelStyle: styles });
+            onClose();
+          }}
+          disabled={!canSave}
+          style={{
+            width: '100%', marginTop: '20px', padding: '14px', borderRadius: '14px', border: 'none',
+            background: canSave ? 'linear-gradient(135deg, #14b8a6, #0d9488)' : 'rgba(255,255,255,0.07)',
+            color: canSave ? '#fff' : '#475569', fontSize: '15px', fontWeight: 700,
+            cursor: canSave ? 'pointer' : 'not-allowed',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
+          }}
+        >
+          <Check size={16} /> Save Changes
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ProfilePage() {
-  const { userVisited, userWishlist } = useUserJourney();
+  const { userVisited, userWishlist, profile, saveProfile, clearAll } = useUserJourney();
   const [activeTab, setActiveTab] = useState<'visited' | 'wishlist'>('visited');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
-  // Map user's saved IDs to country objects
+  if (!profile) return null;
+
   const myVisitedCountries = countries.filter(c => userVisited.includes(c.id));
   const myWishlistCountries = countries.filter(c => userWishlist.includes(c.id));
 
-  // Continent breakdown of user's visits
   const continentBreakdown = myVisitedCountries.reduce((acc, c) => {
     acc[c.continent] = (acc[c.continent] || 0) + 1;
     return acc;
@@ -41,53 +179,74 @@ export default function ProfilePage() {
   const curatorVisited = countries.filter(c => c.visited && !c.parentCountry).length;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: '90px' }}>
 
-      {/* Cover + Avatar */}
-      <div style={{ position: 'relative' }}>
-        <div style={{ position: 'relative', height: '190px' }}>
-          <Image src={myInfo.coverImage} alt="Cover" fill priority sizes="100vw" style={{ objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(3,7,18,0.1) 0%, rgba(3,7,18,0.6) 100%)' }} />
-          <button className="pressable" style={{
-            position: 'absolute', top: 'calc(16px + env(safe-area-inset-top, 0px))', right: '16px',
-            width: '40px', height: '40px', borderRadius: '14px',
-            background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+      {showEditModal && (
+        <EditProfileModal
+          profile={profile}
+          onSave={saveProfile}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
+
+      {showSignOutConfirm && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
+        }} onClick={() => setShowSignOutConfirm(false)}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '20px', padding: '24px', maxWidth: '320px', width: '100%', textAlign: 'center',
           }}>
-            <Settings size={18} color="#fff" />
-          </button>
-        </div>
-
-        {/* Avatar overlapping cover */}
-        <div style={{ position: 'absolute', bottom: '-48px', left: '20px' }}>
-          <div style={{ position: 'relative' }}>
-            <div style={{
-              width: '96px', height: '96px', borderRadius: '28px',
-              overflow: 'hidden', border: '3px solid var(--bg-primary)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            }}>
-              <Image src={myInfo.avatar} alt={myInfo.name} width={96} height={96} style={{ objectFit: 'cover' }} />
+            <LogOut size={32} color="#ef4444" style={{ margin: '0 auto 12px' }} />
+            <h3 style={{ color: '#f8fafc', fontSize: '17px', fontWeight: 700, marginBottom: '8px' }}>Sign Out?</h3>
+            <p style={{ color: '#64748b', fontSize: '13px', lineHeight: 1.6, marginBottom: '20px' }}>
+              This will clear your profile and journey data from this device.
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setShowSignOutConfirm(false)} style={{
+                flex: 1, padding: '12px', borderRadius: '12px',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+              }}>Cancel</button>
+              <button onClick={clearAll} style={{
+                flex: 1, padding: '12px', borderRadius: '12px',
+                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                color: '#ef4444', fontSize: '14px', fontWeight: 700, cursor: 'pointer',
+              }}>Sign Out</button>
             </div>
-            <button className="pressable" style={{
-              position: 'absolute', bottom: '4px', right: '-4px',
-              width: '30px', height: '30px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-              border: '2px solid var(--bg-primary)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(20,184,166,0.35)',
-            }}>
-              <Camera size={14} color="#fff" />
-            </button>
           </div>
         </div>
+      )}
 
-        <div style={{ position: 'absolute', bottom: '-42px', right: '20px' }}>
-          <button className="pressable" style={{
+      {/* Cover gradient */}
+      <div style={{ position: 'relative', height: '190px' }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(135deg, #0d9488 0%, #7c3aed 50%, #db2777 100%)',
+        }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(3,7,18,0.1) 0%, rgba(3,7,18,0.6) 100%)' }} />
+        <button className="pressable" style={{
+          position: 'absolute', top: 'calc(16px + env(safe-area-inset-top, 0px))', right: '16px',
+          width: '40px', height: '40px', borderRadius: '14px',
+          background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Settings size={18} color="#fff" />
+        </button>
+      </div>
+
+      {/* Avatar overlapping cover */}
+      <div style={{ position: 'relative', marginTop: '-48px', padding: '0 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <InitialsAvatar name={profile.name} size={96} />
+          <button onClick={() => setShowEditModal(true)} className="pressable" style={{
             display: 'flex', alignItems: 'center', gap: '6px',
             background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: '12px', padding: '9px 16px',
-            color: '#e2e8f0', fontSize: '13px', fontWeight: 600,
+            borderRadius: '12px', padding: '9px 16px', marginBottom: '4px',
+            color: '#e2e8f0', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
           }}>
             <Edit2 size={14} />Edit Profile
           </button>
@@ -95,18 +254,26 @@ export default function ProfilePage() {
       </div>
 
       {/* User info */}
-      <div style={{ padding: '62px 20px 0' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#f8fafc' }}>{myInfo.name}</h1>
-        <p style={{ color: '#14b8a6', fontSize: '13px', fontWeight: 600, marginTop: '2px' }}>{myInfo.handle}</p>
-        <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.6, marginTop: '8px', maxWidth: '320px' }}>{myInfo.bio}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
-          {myInfo.travelStyle.map((style, i) => (
-            <span key={i} style={{
-              background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)',
-              padding: '4px 11px', borderRadius: '100px', color: '#14b8a6', fontSize: '12px', fontWeight: 600,
-            }}>{style}</span>
-          ))}
-        </div>
+      <div style={{ padding: '14px 20px 0' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#f8fafc' }}>{profile.name}</h1>
+        <p style={{ color: '#14b8a6', fontSize: '13px', fontWeight: 600, marginTop: '2px' }}>{profile.handle}</p>
+        {profile.bio ? (
+          <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.6, marginTop: '8px', maxWidth: '320px' }}>{profile.bio}</p>
+        ) : (
+          <p style={{ color: '#334155', fontSize: '14px', lineHeight: 1.6, marginTop: '8px', fontStyle: 'italic' }}>
+            No bio yet — tap Edit Profile to add one
+          </p>
+        )}
+        {profile.travelStyle.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
+            {profile.travelStyle.map((style, i) => (
+              <span key={i} style={{
+                background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)',
+                padding: '4px 11px', borderRadius: '100px', color: '#14b8a6', fontSize: '12px', fontWeight: 600,
+              }}>{style}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── MY JOURNEY STATS ── */}
@@ -123,7 +290,6 @@ export default function ProfilePage() {
         </div>
 
         {totalAdded === 0 ? (
-          // Empty state
           <div style={{
             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
             borderRadius: '20px', padding: '28px 20px', textAlign: 'center',
@@ -146,12 +312,11 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            {/* Stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '14px' }}>
               {[
-                { value: myVisitedCountries.length, label: 'Visited',  color: '#22c55e', Icon: CheckCircle },
-                { value: myWishlistCountries.length, label: 'Wishlist', color: '#ec4899', Icon: Star       },
-                { value: Object.keys(continentBreakdown).length, label: 'Continents', color: '#8b5cf6', Icon: Globe2 },
+                { value: myVisitedCountries.length,                         label: 'Visited',    color: '#22c55e', Icon: CheckCircle },
+                { value: myWishlistCountries.length,                        label: 'Wishlist',   color: '#ec4899', Icon: Star       },
+                { value: Object.keys(continentBreakdown).length,            label: 'Continents', color: '#8b5cf6', Icon: Globe2     },
               ].map(({ value, label, color, Icon }) => (
                 <div key={label} style={{
                   background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
@@ -164,13 +329,11 @@ export default function ProfilePage() {
               ))}
             </div>
 
-            {/* Progress bar */}
             {myVisitedCountries.length > 0 && (
               <div style={{
                 background: 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(20,184,166,0.08))',
                 border: '1px solid rgba(34,197,94,0.15)',
-                borderRadius: '16px', padding: '14px',
-                marginBottom: '16px',
+                borderRadius: '16px', padding: '14px', marginBottom: '16px',
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
@@ -203,7 +366,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Countries tab list */}
             <div style={{
               display: 'flex',
               background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
@@ -211,8 +373,7 @@ export default function ProfilePage() {
             }}>
               {(['visited', 'wishlist'] as const).map(tab => (
                 <button key={tab} onClick={() => setActiveTab(tab)} className="pressable" style={{
-                  flex: 1, padding: '9px',
-                  borderRadius: '10px',
+                  flex: 1, padding: '9px', borderRadius: '10px',
                   background: activeTab === tab
                     ? tab === 'visited' ? 'rgba(34,197,94,0.18)' : 'rgba(236,72,153,0.18)'
                     : 'transparent',
@@ -226,8 +387,7 @@ export default function ProfilePage() {
                   {tab === 'visited' ? <CheckCircle size={13} /> : <Star size={13} />}
                   {tab === 'visited'
                     ? `Been There (${myVisitedCountries.length})`
-                    : `Wishlist (${myWishlistCountries.length})`
-                  }
+                    : `Wishlist (${myWishlistCountries.length})`}
                 </button>
               ))}
             </div>
@@ -267,15 +427,9 @@ export default function ProfilePage() {
           border: '1px solid rgba(20,184,166,0.18)',
           borderRadius: '20px', padding: '18px',
         }}>
-          {/* Curator header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
             <div style={{ position: 'relative' }}>
-              <div style={{
-                width: '60px', height: '60px', borderRadius: '18px',
-                overflow: 'hidden', border: '2px solid rgba(20,184,166,0.4)',
-              }}>
-                <Image src={CURATOR.avatar} alt={CURATOR.name} width={60} height={60} style={{ objectFit: 'cover' }} />
-              </div>
+              <InitialsAvatar name={CURATOR.name} size={60} />
               <div style={{
                 position: 'absolute', bottom: '-3px', right: '-3px',
                 width: '20px', height: '20px', borderRadius: '7px',
@@ -295,12 +449,11 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Mini stats */}
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             {[
-              { label: 'Guides',     value: curatorVisited,                                    color: '#14b8a6' },
-              { label: 'Experiences', value: countries.filter(c => c.visited).reduce((s, c) => s + c.experiences.length, 0), color: '#8b5cf6' },
-              { label: 'Tips',       value: countries.filter(c => c.visited).reduce((s, c) => s + c.topTips.length, 0),       color: '#f59e0b' },
+              { label: 'Guides',      value: curatorVisited,                                                                              color: '#14b8a6' },
+              { label: 'Experiences', value: countries.filter(c => c.visited).reduce((s, c) => s + c.experiences.length, 0),             color: '#8b5cf6' },
+              { label: 'Tips',        value: countries.filter(c => c.visited).reduce((s, c) => s + c.topTips.length, 0),                 color: '#f59e0b' },
             ].map(({ label, value, color }) => (
               <div key={label} style={{
                 flex: 1, textAlign: 'center',
@@ -313,7 +466,6 @@ export default function ProfilePage() {
             ))}
           </div>
 
-          {/* Curator travel style */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '16px' }}>
             {CURATOR.travelStyle.map((style, i) => (
               <span key={i} style={{
@@ -340,14 +492,14 @@ export default function ProfilePage() {
         <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '10px' }}>Account</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
           {[
-            { Icon: Edit2,    label: 'Edit Profile', color: '#14b8a6', bg: 'rgba(20,184,166,0.1)',  border: 'rgba(20,184,166,0.2)'  },
-            { Icon: Settings, label: 'Preferences',  color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.2)' },
-            { Icon: LogOut,   label: 'Sign Out',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.2)'   },
-          ].map(({ Icon, label, color, bg, border }) => (
-            <button key={label} className="pressable" style={{
+            { Icon: Edit2,    label: 'Edit Profile', color: '#14b8a6', bg: 'rgba(20,184,166,0.1)',  border: 'rgba(20,184,166,0.2)',  onClick: () => setShowEditModal(true) },
+            { Icon: Settings, label: 'Preferences',  color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.2)', onClick: () => {} },
+            { Icon: LogOut,   label: 'Sign Out',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.2)',   onClick: () => setShowSignOutConfirm(true) },
+          ].map(({ Icon, label, color, bg, border, onClick }) => (
+            <button key={label} onClick={onClick} className="pressable" style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: '13px',
               background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-              padding: '14px 16px', borderRadius: '15px',
+              padding: '14px 16px', borderRadius: '15px', cursor: 'pointer',
             }}>
               <div style={{
                 width: '36px', height: '36px', borderRadius: '11px',
@@ -364,7 +516,7 @@ export default function ProfilePage() {
           ))}
         </div>
         <p style={{ color: '#334155', fontSize: '12px', textAlign: 'center', marginTop: '20px' }}>
-          Member since {myInfo.memberSince} · Kiwi Travel v1.0
+          Member since {profile.memberSince} · Kiwi Travel v1.0
         </p>
       </div>
     </div>
